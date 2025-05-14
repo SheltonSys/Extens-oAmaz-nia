@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard | EXTENSÃO{% endblock %}
+
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <h1><i class="fas fa-chart-line text-primary"></i> Painel de Monitoramento</h1>
+    <p class="text-muted">Acompanhamento consolidado das ações de campo e registros técnicos.</p>
+  </div>
+</section>
+
+<section class="content">
+  <div class="container-fluid">
+
+    <!-- Cards principais -->
+    <div class="row">
+      {% for card in cards %}
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-{{ card.cor }}">
+          <div class="inner">
+            <h3>{{ card.total }}</h3>
+            <p>{{ card.categoria }}</p>
+          </div>
+          <div class="icon">
+            <i class="{{ card.icon }}"></i>
+          </div>
+          <a href="{% url card.url %}" class="small-box-footer">{{ card.label }} <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Linha de Gráficos -->
+    <div class="row">
+      {% for graf in graficos %}
+      <div class="col-md-6">
+        <div class="card card-outline card-{{ graf.cor }}">
+          <div class="card-header">
+            <h3 class="card-title"><i class="{{ graf.icon }}"></i> {{ graf.titulo }}</h3>
+          </div>
+          <div class="card-body text-center">
+            <img src="data:image/png;base64,{{ graf.imagem }}" class="img-fluid" alt="Gráfico {{ graf.titulo }}">
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Gráfico Comparativo -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card card-outline card-primary">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-chart-bar"></i> Comparativo de Registros por Categoria</h3>
+          </div>
+          <div class="card-body text-center">
+            <img src="data:image/png;base64,{{ grafico_barras }}" class="img-fluid" alt="Gráfico de Barras">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabela e calendário -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card card-outline card-secondary">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-table"></i> Resumo Geral</h3>
+          </div>
+          <div class="card-body p-0">
+            <table class="table table-striped m-0">
+              <thead>
+                <tr>
+                  <th>Categoria</th>
+                  <th>Total</th>
+                  <th>Novos (últ. mês)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for linha in resumo_categorias %}
+                <tr>
+                  <td>{{ linha.Categoria }}</td>
+                  <td>{{ linha.Total }}</td>
+                  <td>{{ linha.Novos }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card card-outline card-dark">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Calendário de Ações</h3>
+          </div>
+          <div class="card-body p-0">
+            <table class="table table-sm table-hover m-0">
+              <thead class="thead-light">
+                <tr>
+                  <th>Data</th>
+                  <th>Evento</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for evento in calendario_eventos %}
+                <tr>
+                  <td>{{ evento.Data|date:"d/m/Y" }}</td>
+                  <td>{{ evento.Evento }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="2" class="text-center text-muted">Nenhum evento registrado.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+  </div>
+</section>
+{% endblock %}

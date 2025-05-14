@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cadastro de Feirantes | EXTENSÃO Amazônia{% endblock %}
+
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <h1><i class="fas fa-people-carry text-orange"></i> Cadastro de Feirantes</h1>
+    <p class="text-muted">Formulário para registro de informações sobre feiras comunitárias e seus impactos.</p>
+  </div>
+</section>
+
+<section class="content">
+  <div class="container-fluid">
+    <form method="post">
+      {% csrf_token %}
+      <div class="card card-outline card-warning shadow">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-store-alt"></i> Informações da Feira</h3>
+        </div>
+        <div class="card-body">
+
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-orange"><i class="fas fa-info-circle"></i> Identificação</legend>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label>🛍️ Nome da Feira</label>
+                <input type="text" name="nome_feira" class="form-control">
+              </div>
+              <div class="form-group col-md-6">
+                <label>📍 Local</label>
+                <input type="text" name="local" class="form-control">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>⏰ Periodicidade</label>
+              <input type="text" name="periodicidade" class="form-control" placeholder="Ex: semanal, quinzenal, mensal...">
+            </div>
+          </fieldset>
+
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-success"><i class="fas fa-seedling"></i> Produção e Comercialização</legend>
+
+            <div class="form-group">
+              <label>🥬 Produtos vendidos</label>
+              <textarea name="produtos" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label>📦 Volume comercializado</label>
+              <input type="text" name="volume" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>📈 Produtos mais vendidos</label>
+              <textarea name="produtos_mais_vendidos" class="form-control"></textarea>
+            </div>
+          </fieldset>
+
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-primary"><i class="fas fa-hands-helping"></i> Impactos e Contribuições</legend>
+
+            <div class="form-group">
+              <label>🎯 Benefícios percebidos</label>
+              <textarea name="beneficios" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label>🤝 Contribuição para a comunidade</label>
+              <textarea name="contribuicao" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label>💪 Fortalecimento da feira</label>
+              <textarea name="fortalecimento" class="form-control"></textarea>
+            </div>
+          </fieldset>
+
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-secondary"><i class="fas fa-tools"></i> Estrutura e Operação</legend>
+
+            <div class="form-group">
+              <label>🏗️ A feira tem estrutura apropriada?</label>
+              <input type="text" name="estrutura_apropriada" class="form-control" placeholder="Ex: cobertura, bancas, água, energia etc.">
+            </div>
+            <div class="form-group">
+              <label>⚙️ Dificuldades enfrentadas</label>
+              <textarea name="dificuldades" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label>📢 Comunicação (como é feita?)</label>
+              <input type="text" name="comunicacao" class="form-control">
+            </div>
+          </fieldset>
+
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-dark"><i class="fas fa-university"></i> Apoios e Sugestões</legend>
+
+            <div class="form-group">
+              <label>🏛️ Apoio institucional recebido</label>
+              <textarea name="apoio_institucional" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label>❗ Problemas de aceitação</label>
+              <textarea name="problemas_aceitacao" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label>💬 Sugestões dos feirantes</label>
+              <textarea name="sugestoes" class="form-control" placeholder="Recomendações para melhorias, ações e eventos"></textarea>
+            </div>
+          </fieldset>
+
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Salvar Cadastro
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

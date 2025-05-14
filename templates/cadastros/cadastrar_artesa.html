@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cadastro de Artesã | EXTENSÃO Amazônia{% endblock %}
+
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <h1><i class="fas fa-female text-purple"></i> Cadastro de Artesã</h1>
+    <p class="text-muted">Formulário de levantamento técnico e socioeconômico de mulheres artesãs.</p>
+  </div>
+</section>
+
+<section class="content">
+  <div class="container-fluid">
+    <form method="post">
+      {% csrf_token %}
+      <div class="card card-outline card-purple shadow">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-user-edit"></i> Informações Pessoais</h3>
+        </div>
+        <div class="card-body">
+
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-purple"><i class="fas fa-id-card"></i> Dados Básicos</legend>
+
+            <div class="form-group">
+              <label>👩 Nome da Artesã</label>
+              <input type="text" name="nome" class="form-control" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label>🎂 Idade</label>
+                <input type="number" name="idade" class="form-control">
+              </div>
+              <div class="form-group col-md-8">
+                <label>🎓 Escolaridade</label>
+                <select name="escolaridade" class="form-control">
+                  <option>Não alfabetizada</option>
+                  <option>Ensino Fundamental Incompleto</option>
+                  <option>Fundamental Completo</option>
+                  <option>Médio Incompleto</option>
+                  <option>Médio Completo</option>
+                  <option>Superior</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label>👨‍👩‍👧 Pessoas na casa</label>
+                <input type="number" name="pessoas_na_casa" class="form-control">
+              </div>
+              <div class="form-group col-md-6">
+                <label>👥 Familiares que ajudam</label>
+                <input type="number" name="familiares_na_producao" class="form-control">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>💰 Renda do artesanato</label>
+              <select name="renda_artesanato" class="form-control">
+                <option>A principal da casa</option>
+                <option>Um complemento</option>
+                <option>Apenas eventual</option>
+              </select>
+            </div>
+          </fieldset>
+
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-indigo"><i class="fas fa-hammer"></i> Produção e Vendas</legend>
+
+            <div class="form-group">
+              <label>🎨 Tipo(s) de produção</label>
+              <input type="text" name="tipos_producao" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>⏱️ Tempo de experiência (anos)</label>
+              <input type="text" name="tempo_artesanato" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>📚 Como aprendeu</label>
+              <input type="text" name="forma_aprendizado" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>⭐ Pontos fortes (qualidade, criatividade...)</label>
+              <input type="text" name="pontos_fortes" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>🛒 Formas de venda utilizadas</label>
+              <input type="text" name="formas_venda" class="form-control">
+            </div>
+            <div class="form-check mb-2">
+              <input type="checkbox" name="material_divulgacao" value="1" class="form-check-input" id="divulgacaoCheck">
+              <label class="form-check-label" for="divulgacaoCheck">📢 Possui material de divulgação?</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" name="interesse_feiras" value="1" class="form-check-input" id="feiraCheck">
+              <label class="form-check-label" for="feiraCheck">🎪 Deseja participar de feiras?</label>
+            </div>
+          </fieldset>
+
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-danger"><i class="fas fa-tools"></i> Desafios e Apoios</legend>
+
+            <div class="form-group">
+              <label>🔧 Dificuldades na produção</label>
+              <textarea name="dificuldades_producao" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label>📉 Dificuldades na venda</label>
+              <textarea name="dificuldades_venda" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label>🤝 Já recebeu apoios?</label>
+              <textarea name="apoios_recebidos" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label>🛠️ Apoios que ajudariam a produzir melhor</label>
+              <textarea name="apoio_producao" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label>💼 Apoios que ajudariam a vender mais</label>
+              <textarea name="apoio_venda" class="form-control"></textarea>
+            </div>
+          </fieldset>
+
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-muted"><i class="fas fa-comment-dots"></i> Fala da Artesã</legend>
+            <div class="form-group">
+              <label>🗣️ Espaço livre para a artesã se expressar</label>
+              <textarea name="fala_artesa" class="form-control" rows="3" placeholder="Comentários livres, sentimentos, sugestões..."></textarea>
+            </div>
+          </fieldset>
+
+        </div>
+
+        <div class="card-footer d-flex justify-content-end">
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Salvar Cadastro
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

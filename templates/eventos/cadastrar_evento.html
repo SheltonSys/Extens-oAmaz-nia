@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cadastrar Evento | EXTENSÃO{% endblock %}
+
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <h1><i class="fas fa-calendar-plus text-primary"></i> Cadastro de Evento</h1>
+    <p class="text-muted">Registre ações, encontros, oficinas ou feiras previstas.</p>
+  </div>
+</section>
+
+<section class="content">
+  <div class="container-fluid">
+    <form method="post">
+      {% csrf_token %}
+      <div class="card card-outline card-primary">
+        <div class="card-body">
+          <div class="form-group">
+            <label><i class="fas fa-calendar-day"></i> Data do Evento</label>
+            <input type="date" name="data" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-pencil-alt"></i> Nome do Evento</label>
+            <input type="text" name="titulo" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-map-marker-alt"></i> Local</label>
+            <input type="text" name="local" class="form-control">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-align-left"></i> Descrição</label>
+            <textarea name="descricao" class="form-control" rows="4"></textarea>
+          </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+          <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Salvar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="modalSucesso" tabindex="-1" role="dialog" aria-labelledby="modalSucessoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border-success">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="modalSucessoLabel"><i class="fas fa-check-circle"></i> Sucesso!</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        O evento foi cadastrado com sucesso!
+      </div>
+      <div class="modal-footer">
+        <a href="{% url 'listar_eventos' %}" class="btn btn-primary">Ver todos os eventos</a>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Script para abrir a modal se sucesso=1 -->
+{% if request.GET.sucesso == '1' %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    $('#modalSucesso').modal('show');
+  });
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Relatório Geral | EXTENSÃO{% endblock %}
+
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <h1><i class="fas fa-file-alt text-secondary"></i> Relatório Geral</h1>
+    <p class="text-muted">Visualização consolidada dos dados por categoria.</p>
+  </div>
+
+  <div class="d-flex justify-content-end mb-3">
+  <a href="{% url 'relatorio_pdf' %}" target="_blank" class="btn btn-outline-danger">
+    <i class="fas fa-file-pdf"></i> Gerar PDF
+  </a>
+</div>
+
+</section>
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="card card-outline card-secondary">
+      <div class="card-body">
+        <h5><i class="fas fa-female"></i> Total de Artesãs: <strong>{{ total_artesas }}</strong></h5>
+        <h5><i class="fas fa-store"></i> Total de Canais: <strong>{{ total_canais }}</strong></h5>
+        <h5><i class="fas fa-people-carry"></i> Total de Feirantes: <strong>{{ total_feirantes }}</strong></h5>
+        <h5><i class="fas fa-tractor"></i> Total de Agricultores: <strong>{{ total_agricultores }}</strong></h5>
+      </div>
+      <div class="card-footer text-right">
+        <a href="{% url 'relatorio_pdf' %}" class="btn btn-danger">
+          <i class="fas fa-file-pdf"></i> Gerar PDF
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

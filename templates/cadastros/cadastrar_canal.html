@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cadastro de Canal de Comercialização | EXTENSÃO Amazônia{% endblock %}
+
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <h1><i class="fas fa-store text-teal"></i> Cadastro de Canais de Comercialização</h1>
+    <p class="text-muted">Mapeamento das rotas, mercados e estratégias de escoamento da produção local.</p>
+  </div>
+</section>
+
+<section class="content">
+  <div class="container-fluid">
+    <form method="post">
+      {% csrf_token %}
+      <div class="card card-outline card-teal shadow">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-info-circle"></i> Informações do Canal</h3>
+        </div>
+        <div class="card-body">
+
+          <!-- Seção: Identificação do levantamento -->
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-teal"><i class="fas fa-user-tie"></i> Levantamento</legend>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label>👤 Responsável pelo levantamento</label>
+                <input type="text" name="responsavel" class="form-control">
+              </div>
+              <div class="form-group col-md-3">
+                <label>📅 Data</label>
+                <input type="date" name="data" class="form-control">
+              </div>
+              <div class="form-group col-md-3">
+                <label>🏘️ Comunidade</label>
+                <input type="text" name="comunidade" class="form-control">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>👥 Nome do entrevistado</label>
+              <input type="text" name="nome_entrevistado" class="form-control">
+            </div>
+          </fieldset>
+
+          <!-- Seção: Canais -->
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-success"><i class="fas fa-network-wired"></i> Canais de Comercialização</legend>
+
+            <div class="form-group">
+              <label>📦 Canais identificados</label>
+              <textarea name="canais_identificados" class="form-control" placeholder="Ex: Feiras, mercados, cooperativas, entregas diretas..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>🗺️ Nome da Rota</label>
+              <input type="text" name="rota_nome" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>📍 Itinerário da Rota</label>
+              <textarea name="rota_itinerario" class="form-control" placeholder="Descreva o percurso, dias, horários etc."></textarea>
+            </div>
+            <div class="form-group">
+              <label>🛑 Pontos de parada</label>
+              <textarea name="pontos_parada" class="form-control" placeholder="Locais estratégicos para entrega, venda ou armazenamento."></textarea>
+            </div>
+            <div class="form-group">
+              <label>🚚 Transporte e forma de embalagem</label>
+              <textarea name="transporte_embalagem" class="form-control" placeholder="Ex: Carro próprio, entrega terceirizada, embalagem térmica etc."></textarea>
+            </div>
+            <div class="form-group">
+              <label>👨‍🌾 Produtores inseridos na rota</label>
+              <textarea name="produtores_inseridos" class="form-control" placeholder="Informe os nomes ou quantidade de produtores envolvidos."></textarea>
+            </div>
+          </fieldset>
+
+        </div>
+
+        <div class="card-footer d-flex justify-content-end">
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Salvar Cadastro
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

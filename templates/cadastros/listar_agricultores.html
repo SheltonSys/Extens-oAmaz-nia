@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Listagem de Agricultores | EXTENSÃO{% endblock %}
+
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <h1><i class="fas fa-tractor text-success"></i> Agricultores</h1>
+    <p class="text-muted">Relação de agricultores(as) mapeados pelo projeto.</p>
+  </div>
+</section>
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="card card-outline card-success">
+      <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-list"></i> Lista de Agricultores</h3>
+      </div>
+      <div class="card-body table-responsive p-0">
+        <table class="table table-hover table-striped">
+          <thead class="thead-light">
+            <tr>
+              <th>ID</th>
+              <th>Local da Feira</th>
+              <th>Data</th>
+              <th>Entrevistador</th>
+              <th>Produto Principal</th>
+              <th>Acesso Crédito</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ag in agricultores %}
+            <tr>
+              <td>{{ ag.id }}</td>
+              <td>{{ ag.local_feira }}</td>
+              <td>{{ ag.data|date:"d/m/Y" }}</td>
+              <td>{{ ag.entrevistador }}</td>
+              <td>{{ ag.produto_principal }}</td>
+              <td>
+                {% if ag.acesso_credito %}
+                  <span class="badge badge-success">Sim</span>
+                {% else %}
+                  <span class="badge badge-secondary">Não</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center text-muted">Nenhum agricultor cadastrado.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

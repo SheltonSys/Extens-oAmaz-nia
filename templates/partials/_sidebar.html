@@ -1,0 +1,207 @@
+{% load static %}
+
+<aside class="main-sidebar sidebar-white-primary elevation-4">
+  <!-- Logo -->
+  <a href="{% url 'dashboard' %}" class="brand-link">
+    <img src="{% static 'assets/dist/img/AdminLTELogo.png' %}" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <span class="brand-text font-weight-light"><b>EXTENSÃO</b> Amazônia</a></span>
+  </a>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <!-- Painel do usuário -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="image">
+        <img src="{% static 'assets/dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image">
+      </div>
+      <div class="info">
+        {% if request.user.is_authenticated %}
+          <a href="#" class="d-block">{{ request.user.get_full_name|default:request.user.username }}</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="d-block text-danger">Não autenticado</a>
+        {% endif %}
+
+      </div>
+    </div>
+
+    <!-- Busca -->
+    <div class="form-inline">
+      <div class="input-group" data-widget="sidebar-search">
+        <input class="form-control form-control-sidebar" type="search" placeholder="Buscar" aria-label="Search">
+        <div class="input-group-append">
+          <button class="btn btn-sidebar"><i class="fas fa-search fa-fw"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu -->
+    <nav class="mt-2">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+        <!-- Dashboard -->
+        <li class="nav-item">
+          <a href="{% url 'dashboard' %}" class="nav-link {% if request.path == '/dashboard/' %}active{% endif %}">
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+            <p>Dashboard</p>
+          </a>
+        </li>
+
+        <!-- Cadastros -->
+        <li class="nav-header">CADASTROS</li>
+
+        <li class="nav-item has-treeview">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-female"></i>
+            <p>
+              Artesãs
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{% url 'cadastrar_artesa' %}" class="nav-link">
+                <i class="fas fa-user-plus nav-icon text-success"></i>
+                <p>Cadastrar</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'listar_artesas' %}" class="nav-link">
+                <i class="fas fa-users nav-icon text-primary"></i>
+                <p>Listar</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+
+        <li class="nav-item has-treeview">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-store"></i>
+            <p>
+              Canais e Comércio
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{% url 'cadastrar_canal' %}" class="nav-link">
+                <i class="fas fa-plus-square nav-icon text-success"></i>
+                <p>Cadastrar Canal</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'listar_canais' %}" class="nav-link">
+                <i class="fas fa-list nav-icon text-primary"></i>
+                <p>Listar Canais</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+
+        <li class="nav-item has-treeview menu-close">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-people-carry"></i>
+            <p>
+              Feirantes
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{% url 'cadastrar_feirante' %}" class="nav-link">
+                <i class="fas fa-shopping-cart nav-icon text-success"></i>
+                <p>Cadastrar</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'listar_feirantes' %}" class="nav-link">
+                <i class="fas fa-list nav-icon text-primary"></i>
+                <p>Listar</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+
+        <li class="nav-item has-treeview menu-close">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-tractor"></i>
+            <p>
+              Agricultores
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{% url 'cadastrar_agricultor' %}" class="nav-link">
+                <i class="fas fa-tractor nav-icon text-success"></i>
+                <p>Cadastrar</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'listar_agricultores' %}" class="nav-link">
+                <i class="fas fa-list nav-icon text-primary"></i>
+                <p>Listar</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+
+        <li class="nav-item has-treeview">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-calendar-alt text-warning"></i>
+            <p>
+              Calendário
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{% url 'cadastrar_evento' %}" class="nav-link">
+                <i class="far fa-circle nav-icon text-success"></i>
+                <p>Cadastrar Evento</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'listar_eventos' %}" class="nav-link">
+                <i class="far fa-circle nav-icon text-primary"></i>
+                <p>Listar Eventos</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item has-treeview">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-file-alt text-info"></i>
+            <p>
+              Relatórios
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{% url 'relatorio_geral' %}" class="nav-link">
+                <i class="far fa-circle nav-icon text-secondary"></i>
+                <p>Relatório Geral</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'relatorio_pdf' %}" class="nav-link">
+                <i class="far fa-file-pdf nav-icon text-danger"></i>
+                <p>Gerar PDF</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+
+
+      </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+  </div>
+  <!-- /.sidebar -->
+</aside>

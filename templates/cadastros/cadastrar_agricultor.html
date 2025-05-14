@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cadastro de Agricultores | EXTENSÃO Amazônia{% endblock %}
+
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <h1><i class="fas fa-tractor text-success"></i> Cadastro de Agricultores e Agricultoras</h1>
+    <p class="text-muted">Formulário técnico de levantamento socioeconômico de famílias vinculadas ao projeto.</p>
+  </div>
+</section>
+
+<section class="content">
+  <div class="container-fluid">
+    <form method="post">
+      {% csrf_token %}
+      <div class="card card-outline card-success shadow">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-leaf"></i> Informações Gerais</h3>
+        </div>
+        <div class="card-body">
+
+          <!-- Seção: Dados da Feira -->
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-success"><i class="fas fa-store-alt"></i> Dados da Feira</legend>
+            <div class="row">
+              <div class="form-group col-md-6">
+                <label>📍 Local da Feira</label>
+                <input type="text" name="local_feira" class="form-control">
+              </div>
+              <div class="form-group col-md-3">
+                <label>📅 Data</label>
+                <input type="date" name="data" class="form-control">
+              </div>
+              <div class="form-group col-md-3">
+                <label>🔢 Nº da Ficha</label>
+                <input type="text" name="numero_ficha" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>👤 Entrevistador</label>
+              <input type="text" name="entrevistador" class="form-control">
+            </div>
+          </fieldset>
+
+          <!-- Seção: Informações Pessoais -->
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-primary"><i class="fas fa-user"></i> Informações Pessoais</legend>
+            <div class="form-row">
+              <div class="form-group col-md-2">
+                <label>🎂 Idade</label>
+                <input type="number" name="idade" class="form-control">
+              </div>
+              <div class="form-group col-md-3">
+                <label>⚧️ Sexo</label>
+                <select name="sexo" class="form-control">
+                  <option>Masculino</option>
+                  <option>Feminino</option>
+                  <option>Outro</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label>🎓 Escolaridade</label>
+                <input type="text" name="escolaridade" class="form-control">
+              </div>
+              <div class="form-group col-md-3">
+                <label>🏘️ Cidade de Origem</label>
+                <input type="text" name="cidade_origem" class="form-control">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label>⏱️ Tempo na Feira</label>
+                <input type="text" name="tempo_feira" class="form-control">
+              </div>
+              <div class="form-group col-md-6">
+                <label>🧭 Participa de outras feiras?</label><br>
+                <input type="checkbox" name="varias_feiras" value="1"> Sim
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Seção: Relações Familiares -->
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-warning"><i class="fas fa-users"></i> Relações Familiares</legend>
+            <div class="form-group">
+              <label>👨‍👩‍👧‍👦 Trabalha com familiares?</label>
+              <input type="checkbox" name="trabalha_familiares" value="1"> Sim
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-3">
+                <label>👥 Qtde de familiares</label>
+                <input type="number" name="qtd_familiares" class="form-control">
+              </div>
+              <div class="form-group col-md-9">
+                <label>📑 Grau de parentesco</label>
+                <input type="text" name="grau_parentesco" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>🧒 Crianças ajudam?</label>
+              <input type="checkbox" name="criancas_ajudam" value="1"> Sim
+              <input type="text" name="atividades_criancas" class="form-control mt-2" placeholder="Quais atividades?">
+            </div>
+            <div class="form-group">
+              <label>🧓 Idosos ajudam?</label>
+              <input type="checkbox" name="idosos_ajudam" value="1"> Sim
+              <input type="text" name="atividades_idosos" class="form-control mt-2" placeholder="Quais atividades?">
+            </div>
+          </fieldset>
+
+          <!-- Seção: Produção e Renda -->
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-danger"><i class="fas fa-coins"></i> Produção e Renda</legend>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label>🌾 Produto principal</label>
+                <input type="text" name="produto_principal" class="form-control">
+              </div>
+              <div class="form-group col-md-6">
+                <label>📦 Origem do produto</label>
+                <input type="text" name="origem_produto" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>💰 Faturamento médio</label>
+              <input type="text" name="faturamento" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>📉 Custos principais</label>
+              <textarea name="custos_principais" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label>📊 A renda varia?</label>
+              <input type="checkbox" name="renda_varia" value="1"> Sim
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label>📈 Meses bons</label>
+                <input type="text" name="meses_bons" class="form-control">
+              </div>
+              <div class="form-group col-md-6">
+                <label>📉 Meses fracos</label>
+                <input type="text" name="meses_fracos" class="form-control">
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Seção: Estrutura da Feira -->
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-secondary"><i class="fas fa-tools"></i> Estrutura da Feira</legend>
+            <div class="form-group">
+              <label>🛣️ Acesso</label>
+              <input type="text" name="acesso" class="form-control">
+            </div>
+            <div class="form-check">
+              <input type="checkbox" name="agua" value="1" class="form-check-input" id="aguaCheck">
+              <label class="form-check-label" for="aguaCheck">💧 Água disponível</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" name="banheiro" value="1" class="form-check-input" id="banheiroCheck">
+              <label class="form-check-label" for="banheiroCheck">🚻 Banheiro</label>
+            </div>
+            <div class="form-group">
+              <label>🧼 Condições de higiene</label>
+              <input type="text" name="higiene" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>🔐 Sente-se seguro?</label>
+              <input type="checkbox" name="seguranca" value="1"> Sim
+              <input type="text" name="motivo_inseguranca" class="form-control mt-1" placeholder="Se não, explique.">
+            </div>
+          </fieldset>
+
+          <!-- Seção: Organização e Políticas Públicas -->
+          <fieldset class="border p-3 mb-4">
+            <legend class="w-auto text-dark"><i class="fas fa-handshake"></i> Organização e Apoios</legend>
+            <div class="form-group">
+              <label>👥 Participa de associação?</label>
+              <input type="checkbox" name="associacao" value="1"> Sim
+              <input type="text" name="nome_associacao" class="form-control mt-1" placeholder="Nome da associação">
+            </div>
+            <div class="form-group">
+              <label>🎓 Já participou de capacitação?</label>
+              <input type="checkbox" name="capacitacao" value="1"> Sim
+              <input type="text" name="capacitador" class="form-control mt-1" placeholder="Quem capacitou?">
+            </div>
+            <div class="form-group">
+              <label>🏛️ Apoio de políticas públicas</label>
+              <textarea name="apoio_publico" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label>🏦 Acesso a crédito?</label>
+              <input type="checkbox" name="acesso_credito" value="1"> Sim
+              <input type="text" name="instituicao_credito" class="form-control mt-1" placeholder="Instituição de crédito">
+            </div>
+          </fieldset>
+
+        </div>
+
+        <div class="card-footer d-flex justify-content-end">
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Salvar Cadastro
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

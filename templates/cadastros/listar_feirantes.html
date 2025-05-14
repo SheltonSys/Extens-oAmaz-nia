@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Listagem de Feirantes | EXTENSÃO Amazônia{% endblock %}
+
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <h1><i class="fas fa-people-carry text-warning"></i> Feirantes</h1>
+    <p class="text-muted">Cadastro e acompanhamento das feiras, produtos vendidos e impactos sociais.</p>
+  </div>
+</section>
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      {% for feirante in feirantes %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card card-outline card-warning shadow">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-store-alt"></i> {{ feirante.nome_feira }}</h3>
+          </div>
+          <div class="card-body">
+            <p><strong>Local:</strong> {{ feirante.local }}</p>
+            <p><strong>Periodicidade:</strong> {{ feirante.periodicidade }}</p>
+            <p><strong>Produtos:</strong> {{ feirante.produtos }}</p>
+          </div>
+          <div class="card-footer text-right">
+            <small>Volume: {{ feirante.volume }}</small>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info text-center">
+          Nenhum feirante cadastrado até o momento.
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="card card-outline card-secondary">
+      <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-table"></i> Tabela Geral</h3>
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-bordered table-striped table-sm">
+          <thead class="thead-light">
+            <tr>
+              <th>Nome da Feira</th>
+              <th>Local</th>
+              <th>Periodicidade</th>
+              <th>Produtos</th>
+              <th>Benefícios</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for f in feirantes %}
+            <tr>
+              <td>{{ f.nome_feira }}</td>
+              <td>{{ f.local }}</td>
+              <td>{{ f.periodicidade }}</td>
+              <td>{{ f.produtos }}</td>
+              <td>{{ f.beneficios }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
