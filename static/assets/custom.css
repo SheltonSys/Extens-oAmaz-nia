@@ -1,0 +1,9 @@
+/* Força cor de fundo da sidebar */
+.main-sidebar {
+    background-color: #ffffff !important;
+}
+
+/* Força cor de fundo na sidebar em todas as resoluções */
+.main-sidebar {
+    background-color: #222d32 !important;  /* cor escura sólida */
+}
