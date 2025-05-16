@@ -20,11 +20,20 @@
           <div class="card-header">
             <h3 class="card-title"><i class="fas fa-store-alt"></i> {{ feirante.nome_feira }}</h3>
           </div>
-          <div class="card-body">
-            <p><strong>Local:</strong> {{ feirante.local }}</p>
-            <p><strong>Periodicidade:</strong> {{ feirante.periodicidade }}</p>
-            <p><strong>Produtos:</strong> {{ feirante.produtos }}</p>
-          </div>
+
+          <div class="card-body text-center">
+  {% if feirante.foto_evidencia %}
+    <img src="{{ feirante.foto_evidencia.url }}" class="img-thumbnail mb-3" style="max-height: 110px;" alt="Foto do Feirante">
+  {% else %}
+    <img src="{% static 'assets/dist/img/avatar.png' %}" class="img-thumbnail mb-3" style="max-height: 110px;" alt="Avatar padrão">
+  {% endif %}
+
+  <p><strong>Local:</strong> {{ feirante.local }}</p>
+  <p><strong>Periodicidade:</strong> {{ feirante.periodicidade }}</p>
+  <p><strong>Produtos:</strong> {{ feirante.produtos }}</p>
+</div>
+
+
           <div class="card-footer text-right">
             <small>Volume: {{ feirante.volume }}</small>
           </div>
@@ -61,13 +70,27 @@
               <td>{{ f.local }}</td>
               <td>{{ f.periodicidade }}</td>
               <td>{{ f.produtos }}</td>
-              <td>{{ f.beneficios }}</td>
+              <td>
+  {% if f.beneficios_lista %}
+    <ul class="mb-0 pl-3">
+      {% for b in f.beneficios_lista %}
+        <li>{{ b }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <span class="text-muted">–</span>
+  {% endif %}
+</td>
+
             </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
     </div>
+
+
+
   </div>
 </section>
 {% endblock %}

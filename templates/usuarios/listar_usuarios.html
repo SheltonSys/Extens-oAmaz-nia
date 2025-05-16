@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Usuários | EXTENSÃO{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="card card-outline card-primary">
+    <div class="card-header">
+      <h3 class="card-title"><i class="fas fa-users"></i> Controle de Usuários</h3>
+    </div>
+    <div class="card-body table-responsive">
+      <table class="table table-hover table-bordered">
+        <thead class="thead-light">
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Usuário</th>
+            <th>Email</th>
+            <th>Ativo</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in usuarios %}
+          <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.get_full_name }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              {% if user.is_active %}
+                <span class="badge badge-success">Sim</span>
+              {% else %}
+                <span class="badge badge-danger">Não</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{% url 'editar_usuario' user.id %}" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+              <a href="{% url 'excluir_usuario' user.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Confirma a exclusão?')"><i class="fas fa-trash"></i></a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" class="text-center text-muted">Nenhum usuário encontrado.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

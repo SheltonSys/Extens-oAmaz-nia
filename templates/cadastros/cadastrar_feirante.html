@@ -36,9 +36,27 @@
             </div>
 
             <div class="form-group">
-              <label>⏰ Periodicidade</label>
-              <input type="text" name="periodicidade" class="form-control" placeholder="Ex: semanal, quinzenal, mensal...">
-            </div>
+  <label><strong>⏰ Período de Realização</strong></label>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="periodicidade" id="periodo1" value="1 vez por semana">
+    <label class="form-check-label" for="periodo1">1 vez por semana</label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="periodicidade" id="periodo3" value="1 vez por mês">
+    <label class="form-check-label" for="periodo3">1 vez por mês</label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="periodicidade" id="periodo2" value="2 vezes por mês">
+    <label class="form-check-label" for="periodo2">2 vezes por mês</label>
+  </div>
+
+  
+
+</div>
+
+
           </fieldset>
 
           <fieldset class="border p-3 mb-4">
@@ -62,52 +80,252 @@
             <legend class="w-auto text-primary"><i class="fas fa-hands-helping"></i> Impactos e Contribuições</legend>
 
             <div class="form-group">
-              <label>🎯 Benefícios percebidos</label>
-              <textarea name="beneficios" class="form-control"></textarea>
-            </div>
+  <label><strong>🎯 Quais benefícios você percebe em participar das feiras?</strong></label>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="beneficios[]" id="beneficio1" value="Geração de renda e sustento familiar">
+    <label class="form-check-label" for="beneficio1">
+      Geração de renda e sustento familiar
+    </label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="beneficios[]" id="beneficio2" value="Contato direto com os clientes e divulgação dos produtos">
+    <label class="form-check-label" for="beneficio2">
+      Contato direto com os clientes e divulgação dos produtos
+    </label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="beneficios[]" id="beneficio3" value="Troca de experiências e fortalecimento da economia local">
+    <label class="form-check-label" for="beneficio3">
+      Troca de experiências e fortalecimento da economia local
+    </label>
+  </div>
+</div>
+
+
             <div class="form-group">
-              <label>🤝 Contribuição para a comunidade</label>
-              <textarea name="contribuicao" class="form-control"></textarea>
-            </div>
+  <label><strong>🤝 Como a feira contribui para a venda dos seus produtos?</strong></label>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="contribuicao[]" id="contribuicao1" value="Aumenta a visibilidade e facilita o contato direto com o consumidor">
+    <label class="form-check-label" for="contribuicao1">
+      Aumenta a visibilidade e facilita o contato direto com o consumidor
+    </label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="contribuicao[]" id="contribuicao2" value="Permite vender com maior frequência e em maior volume">
+    <label class="form-check-label" for="contribuicao2">
+      Permite vender com maior frequência e em maior volume
+    </label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="contribuicao[]" id="contribuicao3" value="Reduz custos com transporte e intermediação">
+    <label class="form-check-label" for="contribuicao3">
+      Reduz custos com transporte e intermediação
+    </label>
+  </div>
+</div>
+
+
             <div class="form-group">
-              <label>💪 Fortalecimento da feira</label>
-              <textarea name="fortalecimento" class="form-control"></textarea>
-            </div>
+  <label><strong>💪 A participação nas feiras tem ajudado no fortalecimento da sua produção ou organização comunitária? De que forma?</strong></label>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="fortalecimento[]" id="fort1" value="Sim, fortaleceu a produção com aumento da demanda e incentivo ao cultivo contínuo">
+    <label class="form-check-label" for="fort1">
+      Sim, fortaleceu a produção com aumento da demanda e incentivo ao cultivo contínuo
+    </label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="fortalecimento[]" id="fort2" value="Sim, contribuiu para união com outros produtores e participação em associações ou grupos">
+    <label class="form-check-label" for="fort2">
+      Sim, contribuiu para união com outros produtores e participação em associações ou grupos
+    </label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="fortalecimento[]" id="fort3" value="Não houve mudanças significativas na produção ou organização comunitária até o momento">
+    <label class="form-check-label" for="fort3">
+      Não houve mudanças significativas na produção ou organização comunitária até o momento
+    </label>
+  </div>
+  <br>
+
+  <div class="form-group">
+  <label><strong>📦 Produtos com maior aceitação nas feiras</strong></label>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="produtos_aceitacao[]" id="produto1" value="Hortaliças e verduras">
+    <label class="form-check-label" for="produto1">
+      Hortaliças e verduras (como alface, cheiro-verde, couve, etc.)
+    </label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="produtos_aceitacao[]" id="produto2" value="Frutas da época">
+    <label class="form-check-label" for="produto2">
+      Frutas da época (como banana, manga, melancia, etc.)
+    </label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="produtos_aceitacao[]" id="produto3" value="Produtos processados/artesanais">
+    <label class="form-check-label" for="produto3">
+      Produtos processados/artesanais (como farinha, doces, polpas, mel, etc.)
+    </label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" id="produtoOutro" value="Outro">
+    <label class="form-check-label" for="produtoOutro">Outros</label>
+  </div>
+
+  <!-- Campo de texto que só aparece quando "Outros" for marcado -->
+  <div id="campoOutroProduto" class="mt-2" style="display: none;">
+    <input type="text" class="form-control" name="produtos_aceitacao[]" placeholder="Descreva os outros produtos">
+  </div>
+</div>
+
+
+<div class="form-group">
+  <label><strong>📍 A localização ou estrutura da feira favorece suas vendas? Por quê?</strong></label>
+
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="estrutura_feira" id="estrutura1" value="Sim, porque é de fácil acesso para os clientes e tem boa circulação de pessoas">
+    <label class="form-check-label" for="estrutura1">
+      Sim, porque é de fácil acesso para os clientes e tem boa circulação de pessoas
+    </label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="estrutura_feira" id="estrutura2" value="Parcialmente, pois a localização é boa, mas a estrutura precisa de melhorias">
+    <label class="form-check-label" for="estrutura2">
+      Parcialmente, pois a localização é boa, mas a estrutura precisa de melhorias (como cobertura, higiene, segurança)
+    </label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="estrutura_feira" id="estrutura3" value="Não, porque o local é de difícil acesso ou mal estruturado">
+    <label class="form-check-label" for="estrutura3">
+      Não, porque o local é de difícil acesso ou mal estruturado, o que afasta os clientes
+    </label>
+  </div>
+</div>
+
+
+
+
+</div>
+
+
           </fieldset>
 
           <fieldset class="border p-3 mb-4">
             <legend class="w-auto text-secondary"><i class="fas fa-tools"></i> Estrutura e Operação</legend>
 
             <div class="form-group">
-              <label>🏗️ A feira tem estrutura apropriada?</label>
+              <label>🏗️ Os equipamentos e a estrutura da feira (barracas, iluminação, etc.) são adequados? O que poderia melhorar?</label>
               <input type="text" name="estrutura_apropriada" class="form-control" placeholder="Ex: cobertura, bancas, água, energia etc.">
             </div>
+
             <div class="form-group">
-              <label>⚙️ Dificuldades enfrentadas</label>
-              <textarea name="dificuldades" class="form-control"></textarea>
-            </div>
+  <label><strong>⚙️ Quais são as principais dificuldades que você encontra para participar das feiras?</strong></label>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="dificuldades[]" id="dif1" value="Falta de transporte adequado ou alto custo para deslocamento">
+    <label class="form-check-label" for="dif1">
+      Falta de transporte adequado ou alto custo para deslocamento
+    </label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="dificuldades[]" id="dif2" value="Falta de estrutura na feira (como barracas, cobertura, água, energia)">
+    <label class="form-check-label" for="dif2">
+      Falta de estrutura na feira (como barracas, cobertura, água, energia)
+    </label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="dificuldades[]" id="dif3" value="Baixo movimento de clientes ou concorrência desleal com atravessadores">
+    <label class="form-check-label" for="dif3">
+      Baixo movimento de clientes ou concorrência desleal com atravessadores
+    </label>
+  </div>
+</div>
+
+
             <div class="form-group">
-              <label>📢 Comunicação (como é feita?)</label>
-              <input type="text" name="comunicacao" class="form-control">
-            </div>
+  <label><strong>📢 Como é a comunicação e organização com os responsáveis pela feira?</strong></label>
+
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="comunicacao" id="comunicacao1" value="Boa – há diálogo, avisos com antecedência e apoio na organização">
+    <label class="form-check-label" for="comunicacao1">
+      Boa – há diálogo, avisos com antecedência e apoio na organização
+    </label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="comunicacao" id="comunicacao2" value="Regular – às vezes há informações, mas falta mais clareza e planejamento">
+    <label class="form-check-label" for="comunicacao2">
+      Regular – às vezes há informações, mas falta mais clareza e planejamento
+    </label>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="comunicacao" id="comunicacao3" value="Ruim – falta comunicação, organização e presença dos responsáveis">
+    <label class="form-check-label" for="comunicacao3">
+      Ruim – falta comunicação, organização e presença dos responsáveis
+    </label>
+  </div>
+</div>
+
+
           </fieldset>
 
           <fieldset class="border p-3 mb-4">
             <legend class="w-auto text-dark"><i class="fas fa-university"></i> Apoios e Sugestões</legend>
 
             <div class="form-group">
-              <label>🏛️ Apoio institucional recebido</label>
+              <label>🏛️ Você sente que há apoio suficiente por parte das instituições locais ou da organização da feira?</label>
               <textarea name="apoio_institucional" class="form-control"></textarea>
             </div>
             <div class="form-group">
-              <label>❗ Problemas de aceitação</label>
+              <label>❗ Já enfrentou problemas com a aceitação dos seus produtos ou com o público consumidor?</label>
               <textarea name="problemas_aceitacao" class="form-control"></textarea>
             </div>
             <div class="form-group">
-              <label>💬 Sugestões dos feirantes</label>
+              <label>💬 O que você sugeriria para melhorar sua experiência e os resultados da participação nas feiras?</label>
               <textarea name="sugestoes" class="form-control" placeholder="Recomendações para melhorias, ações e eventos"></textarea>
             </div>
           </fieldset>
+
+
+          <fieldset class="border p-3 mb-4">
+  <legend class="w-auto text-info"><i class="fas fa-camera"></i> Foto de Evidência</legend>
+
+  <div class="form-group text-center">
+    <video id="video" width="100%" height="240" autoplay class="border rounded mb-2"></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <input type="hidden" name="foto_base64" id="foto_base64">
+    <button type="button" class="btn btn-outline-info" onclick="capturarFoto()">
+      <i class="fas fa-camera"></i> Tirar Foto
+    </button>
+  </div>
+
+  <div id="preview" class="text-center mt-3" style="display:none;">
+    <p class="text-success"><i class="fas fa-check-circle"></i> Foto capturada com sucesso!</p>
+    <img id="foto_preview" src="#" alt="Prévia da Foto" class="img-thumbnail" style="max-width: 100%;">
+  </div>
+</fieldset>
+
+
+
+
 
         </div>
         <div class="card-footer d-flex justify-content-end">
@@ -119,4 +337,51 @@
     </form>
   </div>
 </section>
+
+
+
+
+<script>
+  const outroCheckbox = document.getElementById('produtoOutro');
+  const campoOutro = document.getElementById('campoOutroProduto');
+
+  outroCheckbox.addEventListener('change', function () {
+    campoOutro.style.display = this.checked ? 'block' : 'none';
+    const input = campoOutro.querySelector('input');
+    if (!this.checked) input.value = '';  // limpa se desmarcado
+  });
+</script>
+
+
+<script>
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      document.getElementById('video').srcObject = stream;
+    })
+    .catch(error => {
+      console.error("Erro ao acessar câmera:", error);
+      alert("Não foi possível acessar a câmera.");
+    });
+
+  function capturarFoto() {
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const preview = document.getElementById('preview');
+    const fotoInput = document.getElementById('foto_base64');
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const base64 = canvas.toDataURL('image/jpeg');
+    fotoInput.value = base64;
+
+    document.getElementById('foto_preview').src = base64;
+    preview.style.display = 'block';
+  }
+</script>
+
+
 {% endblock %}

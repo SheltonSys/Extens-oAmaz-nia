@@ -9,44 +9,62 @@ class Artesa(models.Model):
     familiares_na_producao = models.IntegerField()
     renda_artesanato = models.CharField(max_length=50)
 
-    tipos_producao = models.TextField()
-    tempo_artesanato = models.CharField(max_length=50)
-    forma_aprendizado = models.CharField(max_length=100)
+    tipos_producao = models.TextField(null=True, blank=True)
+    tempo_artesanato = models.CharField(max_length=50, null=True, blank=True)
+    forma_aprendizado = models.CharField(max_length=100, null=True, blank=True)
 
-    pontos_fortes = models.TextField()
-    formas_venda = models.TextField()
-    material_divulgacao = models.BooleanField()
-    interesse_feiras = models.BooleanField()
+    pontos_fortes = models.TextField(null=True, blank=True)
+    formas_venda = models.TextField(null=True, blank=True)
+    material_divulgacao = models.BooleanField(default=False)
+    interesse_feiras = models.BooleanField(default=False)
 
-    dificuldades_producao = models.TextField()
-    dificuldades_venda = models.TextField()
-    apoios_recebidos = models.TextField()
+    dificuldades_producao = models.TextField(null=True, blank=True)
+    dificuldades_venda = models.TextField(null=True, blank=True)
+    apoios_recebidos = models.TextField(null=True, blank=True)
 
-    apoio_producao = models.TextField()
-    apoio_venda = models.TextField()
-    fala_artesa = models.TextField(blank=True)
+    apoio_producao = models.TextField(null=True, blank=True)
+    apoio_venda = models.TextField(null=True, blank=True)
+    fala_artesa = models.TextField(null=True, blank=True)
+
+    foto_evidencia = models.ImageField(upload_to='artesas/fotos/', null=True, blank=True)
 
     data_cadastro = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.nome
+
+
 ######################***********************************************************************************************************
 
-# 2. Canais de comercialização
+from django.db import models
+
 class CanalComercializacao(models.Model):
     responsavel = models.CharField(max_length=100)
     data = models.DateField()
     comunidade = models.CharField(max_length=100)
     nome_entrevistado = models.CharField(max_length=100)
 
-    canais_identificados = models.TextField()
-    rota_nome = models.CharField(max_length=100)
-    rota_itinerario = models.TextField()
-    pontos_parada = models.TextField()
-    transporte_embalagem = models.TextField()
-    produtores_inseridos = models.TextField()
+    # Campos estruturados em formato JSON
+    canais_identificados = models.TextField(null=True, blank=True)       # Lista de canais (JSON)
+    rota_nome = models.CharField(max_length=100, null=True, blank=True)
+    rota_itinerario = models.TextField(null=True, blank=True)            # Lista de paradas (JSON)
+    transporte_embalagem = models.TextField(null=True, blank=True)       # Lista de transportes/embalagens (JSON)
+    produtores_inseridos = models.TextField(null=True, blank=True)       # Lista de produtores (JSON)
+
+    # Campos simples adicionais
+    pontos_parada = models.TextField(null=True, blank=True)
 
     data_cadastro = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.responsavel} - {self.comunidade} ({self.data.strftime('%d/%m/%Y')})"
+
+
+
 ######################***********************************************************************************************************
 
-# 3. Feirantes
+from django.db import models
+
 class Feirante(models.Model):
     nome_feira = models.CharField(max_length=100)
     local = models.CharField(max_length=100)
@@ -54,19 +72,26 @@ class Feirante(models.Model):
     produtos = models.TextField()
     volume = models.CharField(max_length=50)
 
-    beneficios = models.TextField()
-    contribuicao = models.TextField()
-    fortalecimento = models.TextField()
-    produtos_mais_vendidos = models.TextField()
-    estrutura_apropriada = models.CharField(max_length=255)
+    beneficios = models.TextField()  # JSON - múltiplas opções
+    contribuicao = models.TextField()  # JSON
+    fortalecimento = models.TextField()  # JSON
+    produtos_mais_vendidos = models.TextField()  # JSON
+    estrutura_apropriada = models.CharField(max_length=255)  # radio button
 
-    dificuldades = models.TextField()
-    comunicacao = models.CharField(max_length=100)
-    apoio_institucional = models.TextField()
-    problemas_aceitacao = models.TextField()
-    sugestoes = models.TextField()
+    dificuldades = models.TextField()  # JSON
+    comunicacao = models.CharField(max_length=100)  # radio button
+    apoio_institucional = models.TextField(null=True, blank=True)
+    problemas_aceitacao = models.TextField(null=True, blank=True)
+    sugestoes = models.TextField(null=True, blank=True)
+
+    foto_evidencia = models.ImageField(upload_to='feirantes/fotos/', null=True, blank=True)
 
     data_cadastro = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.nome_feira
+
+
 ######################***********************************************************************************************************
 
 # 4. Agricultores
@@ -94,7 +119,7 @@ class Agricultor(models.Model):
     produto_principal = models.CharField(max_length=100)
     origem_produto = models.CharField(max_length=50)
     faturamento = models.CharField(max_length=50)
-    custos_principais = models.TextField()
+    custos_principais = models.TextField(blank=True, null=False, default='')
     renda_varia = models.BooleanField()
     meses_bons = models.TextField()
     meses_fracos = models.TextField()
@@ -110,7 +135,7 @@ class Agricultor(models.Model):
     nome_associacao = models.CharField(max_length=100, blank=True)
     capacitacao = models.BooleanField()
     capacitador = models.CharField(max_length=100, blank=True)
-    apoio_publico = models.TextField()
+    apoio_publico = models.TextField(blank=True, null=True)
     acesso_credito = models.BooleanField()
     instituicao_credito = models.CharField(max_length=100, blank=True)
 

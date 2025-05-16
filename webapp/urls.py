@@ -12,6 +12,8 @@ from .views import (
     cadastrar_agricultor,
 )
 from .views import relatorio_pdf
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -39,4 +41,13 @@ urlpatterns = [
     path('relatorios/pdf/', views.relatorio_pdf, name='relatorio_pdf'),
 
     path('relatorio/pdf/', relatorio_pdf, name='relatorio_pdf'),
+
+    path('usuarios/', views.listar_usuarios, name='listar_usuarios'),
+    path('usuarios/novo/', views.adicionar_usuario, name='adicionar_usuario'),
+    path('usuarios/editar/<int:usuario_id>/', views.editar_usuario, name='editar_usuario'),
+    path('usuarios/excluir/<int:usuario_id>/', views.excluir_usuario, name='excluir_usuario'),
 ]
+
+
+if settings.DEBUG is False:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

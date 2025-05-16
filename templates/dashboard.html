@@ -126,4 +126,22 @@
 
   </div>
 </section>
+
+
+<div id="mensagem-sucesso" class="alert alert-success text-center shadow" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999;">
+  ✅ Cadastro salvo com sucesso!
+</div>
+
+<script>
+  // Exibe a mensagem se houver flag no localStorage
+  if (localStorage.getItem('cadastro_agricultor_sucesso')) {
+    localStorage.removeItem('cadastro_agricultor_sucesso');
+    const msg = document.getElementById('mensagem-sucesso');
+    msg.style.display = 'block';
+    setTimeout(() => {
+      msg.style.display = 'none';
+    }, 4000);
+  }
+</script>
+
 {% endblock %}

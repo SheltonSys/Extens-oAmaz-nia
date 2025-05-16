@@ -26,10 +26,14 @@
             <legend class="w-auto text-teal"><i class="fas fa-user-tie"></i> Levantamento</legend>
 
             <div class="form-row">
+
               <div class="form-group col-md-6">
-                <label>👤 Responsável pelo levantamento</label>
-                <input type="text" name="responsavel" class="form-control">
-              </div>
+  <label>👤 Responsável pelo levantamento</label>
+  <input type="text" name="responsavel" class="form-control" 
+         value="{{ request.user.get_full_name|default:request.user.username }}" readonly>
+</div>
+
+
               <div class="form-group col-md-3">
                 <label>📅 Data</label>
                 <input type="date" name="data" class="form-control">
@@ -51,29 +55,169 @@
             <legend class="w-auto text-success"><i class="fas fa-network-wired"></i> Canais de Comercialização</legend>
 
             <div class="form-group">
-              <label>📦 Canais identificados</label>
-              <textarea name="canais_identificados" class="form-control" placeholder="Ex: Feiras, mercados, cooperativas, entregas diretas..."></textarea>
-            </div>
+  <label><strong>📦 Quadro Resumo dos Canais Identificados</strong></label>
+
+  <!-- Cabeçalho -->
+  <div class="row fw-bold d-none d-md-flex mb-2">
+    <div class="col-md-2">Canal</div>
+    <div class="col-md-2">Tipo</div>
+    <div class="col-md-3">Nome do Canal</div>
+    <div class="col-md-2">Volume R$</div>
+    <div class="col-md-3">Observação</div>
+  </div>
+
+  <!-- Container dos grupos de canais -->
+  <div id="canais-container">
+    <div class="row mb-2 canal-row">
+      <div class="col-md-2 mb-2 mb-md-0">
+        <input type="text" name="canal_canal[]" class="form-control" placeholder="Ex: Feira">
+      </div>
+      <div class="col-md-2 mb-2 mb-md-0">
+        <input type="text" name="canal_tipo[]" class="form-control" placeholder="Tipo">
+      </div>
+      <div class="col-md-3 mb-2 mb-md-0">
+        <input type="text" name="canal_nome[]" class="form-control" placeholder="Nome do Canal">
+      </div>
+      <div class="col-md-2 mb-2 mb-md-0">
+        <input type="number" step="0.01" name="canal_volume[]" class="form-control" placeholder="R$">
+      </div>
+      <div class="col-md-2 mb-2 mb-md-0">
+        <input type="text" name="canal_obs[]" class="form-control" placeholder="Observação">
+      </div>
+      <div class="col-md-1">
+        <button type="button" class="btn btn-danger btn-sm remove-row" title="Remover">
+          &minus;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botão de adicionar -->
+  <button type="button" class="btn btn-success btn-sm mt-2" onclick="adicionarCanal()">
+    + Adicionar Canal
+  </button>
+</div>
+
+
+
+
             <div class="form-group">
               <label>🗺️ Nome da Rota</label>
               <input type="text" name="rota_nome" class="form-control">
             </div>
+
+
             <div class="form-group">
-              <label>📍 Itinerário da Rota</label>
-              <textarea name="rota_itinerario" class="form-control" placeholder="Descreva o percurso, dias, horários etc."></textarea>
-            </div>
-            <div class="form-group">
+  <label><strong>📍 Itinerário da Rota</strong></label>
+
+  <!-- Cabeçalho da "tabela" para telas maiores -->
+  <div class="row fw-bold d-none d-md-flex mb-2">
+    <div class="col-md-4">Ponto de Parada</div>
+    <div class="col-md-3">Tempo Estimado</div>
+    <div class="col-md-4">Observações</div>
+    <div class="col-md-1"></div>
+  </div>
+
+  <!-- Container das paradas -->
+  <div id="itinerario-container">
+    <div class="row mb-2 parada-row">
+      <div class="col-md-4 mb-2 mb-md-0">
+        <input type="text" name="parada_ponto[]" class="form-control" placeholder="Nome do local">
+      </div>
+      <div class="col-md-3 mb-2 mb-md-0">
+        <input type="text" name="parada_tempo[]" class="form-control" placeholder="Ex: 15min">
+      </div>
+      <div class="col-md-4 mb-2 mb-md-0">
+        <input type="text" name="parada_obs[]" class="form-control" placeholder="Observações">
+      </div>
+      <div class="col-md-1">
+        <button type="button" class="btn btn-danger btn-sm remove-row" title="Remover">
+          &minus;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botão de adicionar -->
+  <button type="button" class="btn btn-success btn-sm mt-2" onclick="adicionarParada()">
+    + Adicionar Parada
+  </button>
+</div>
+
+
+
+            <!-- <div class="form-group">
               <label>🛑 Pontos de parada</label>
               <textarea name="pontos_parada" class="form-control" placeholder="Locais estratégicos para entrega, venda ou armazenamento."></textarea>
-            </div>
+            </div> -->
+
             <div class="form-group">
-              <label>🚚 Transporte e forma de embalagem</label>
-              <textarea name="transporte_embalagem" class="form-control" placeholder="Ex: Carro próprio, entrega terceirizada, embalagem térmica etc."></textarea>
-            </div>
+  <label><strong>🚚 Transporte e forma de embalagem</strong></label>
+
+  <!-- Cabeçalho para telas grandes -->
+  <div class="row fw-bold d-none d-md-flex mb-2">
+    <div class="col-md-4">Tipo de Transporte</div>
+    <div class="col-md-4">Tipo de Embalagem</div>
+    <div class="col-md-3">Observações</div>
+    <div class="col-md-1"></div>
+  </div>
+
+  <!-- Container das linhas -->
+  <div id="transporte-container">
+    <div class="row mb-2 transporte-row">
+      <div class="col-md-4 mb-2 mb-md-0">
+        <input type="text" name="transporte_tipo[]" class="form-control" placeholder="Ex: Carro próprio">
+      </div>
+      <div class="col-md-4 mb-2 mb-md-0">
+        <input type="text" name="embalagem_tipo[]" class="form-control" placeholder="Ex: Térmica, caixa de papelão">
+      </div>
+      <div class="col-md-3 mb-2 mb-md-0">
+        <input type="text" name="transporte_obs[]" class="form-control" placeholder="Observações">
+      </div>
+      <div class="col-md-1">
+        <button type="button" class="btn btn-danger btn-sm remove-row" title="Remover">
+          &minus;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botão adicionar -->
+  <button type="button" class="btn btn-success btn-sm mt-2" onclick="adicionarTransporte()">+ Adicionar Transporte</button>
+</div>
+
+
             <div class="form-group">
-              <label>👨‍🌾 Produtores inseridos na rota</label>
-              <textarea name="produtores_inseridos" class="form-control" placeholder="Informe os nomes ou quantidade de produtores envolvidos."></textarea>
-            </div>
+  <label><strong>👨‍🌾 Produtores inseridos na rota</strong></label>
+
+  <!-- Cabeçalho para telas grandes -->
+  <div class="row fw-bold d-none d-md-flex mb-2">
+    <div class="col-md-6">Nome</div>
+    <div class="col-md-5">Comunidade</div>
+    <div class="col-md-1"></div>
+  </div>
+
+  <!-- Container das linhas -->
+  <div id="produtores-container">
+    <div class="row mb-2 produtor-row">
+      <div class="col-md-6 mb-2 mb-md-0">
+        <input type="text" name="produtor_nome[]" class="form-control" placeholder="Nome do produtor">
+      </div>
+      <div class="col-md-5 mb-2 mb-md-0">
+        <input type="text" name="produtor_comunidade[]" class="form-control" placeholder="Comunidade">
+      </div>
+      <div class="col-md-1">
+        <button type="button" class="btn btn-danger btn-sm remove-row" title="Remover">&minus;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botão adicionar -->
+  <button type="button" class="btn btn-success btn-sm mt-2" onclick="adicionarProdutor()">+ Adicionar Produtor</button>
+</div>
+
+
+
           </fieldset>
 
         </div>
@@ -87,4 +231,142 @@
     </form>
   </div>
 </section>
+
+
+
+<script>
+  function adicionarCanal() {
+    const container = document.getElementById('canais-container');
+    const novaLinha = document.createElement('div');
+    novaLinha.classList.add('row', 'mb-2', 'canal-row');
+    novaLinha.innerHTML = `
+      <div class="col-md-2 mb-2 mb-md-0">
+        <input type="text" name="canal_canal[]" class="form-control" placeholder="Ex: Feira">
+      </div>
+      <div class="col-md-2 mb-2 mb-md-0">
+        <input type="text" name="canal_tipo[]" class="form-control" placeholder="Tipo">
+      </div>
+      <div class="col-md-3 mb-2 mb-md-0">
+        <input type="text" name="canal_nome[]" class="form-control" placeholder="Nome do Canal">
+      </div>
+      <div class="col-md-2 mb-2 mb-md-0">
+        <input type="number" step="0.01" name="canal_volume[]" class="form-control" placeholder="R$">
+      </div>
+      <div class="col-md-2 mb-2 mb-md-0">
+        <input type="text" name="canal_obs[]" class="form-control" placeholder="Observação">
+      </div>
+      <div class="col-md-1">
+        <button type="button" class="btn btn-danger btn-sm remove-row" title="Remover">
+          &minus;
+        </button>
+      </div>
+    `;
+    container.appendChild(novaLinha);
+  }
+
+  // Event delegation para remover linha
+  document.addEventListener('click', function (e) {
+    if (e.target && e.target.classList.contains('remove-row')) {
+      const linha = e.target.closest('.canal-row');
+      if (linha) linha.remove();
+    }
+  });
+</script>
+
+
+<script>
+  function adicionarParada() {
+    const container = document.getElementById('itinerario-container');
+    const novaParada = document.createElement('div');
+    novaParada.classList.add('row', 'mb-2', 'parada-row');
+    novaParada.innerHTML = `
+      <div class="col-md-4 mb-2 mb-md-0">
+        <input type="text" name="parada_ponto[]" class="form-control" placeholder="Nome do local">
+      </div>
+      <div class="col-md-3 mb-2 mb-md-0">
+        <input type="text" name="parada_tempo[]" class="form-control" placeholder="Ex: 15min">
+      </div>
+      <div class="col-md-4 mb-2 mb-md-0">
+        <input type="text" name="parada_obs[]" class="form-control" placeholder="Observações">
+      </div>
+      <div class="col-md-1">
+        <button type="button" class="btn btn-danger btn-sm remove-row" title="Remover">
+          &minus;
+        </button>
+      </div>
+    `;
+    container.appendChild(novaParada);
+  }
+
+  document.addEventListener('click', function (e) {
+    if (e.target && e.target.classList.contains('remove-row')) {
+      const linha = e.target.closest('.parada-row');
+      if (linha) linha.remove();
+    }
+  });
+</script>
+
+
+
+<script>
+  function adicionarTransporte() {
+    const container = document.getElementById('transporte-container');
+    const novaLinha = document.createElement('div');
+    novaLinha.classList.add('row', 'mb-2', 'transporte-row');
+    novaLinha.innerHTML = `
+      <div class="col-md-4 mb-2 mb-md-0">
+        <input type="text" name="transporte_tipo[]" class="form-control" placeholder="Ex: Carro próprio">
+      </div>
+      <div class="col-md-4 mb-2 mb-md-0">
+        <input type="text" name="embalagem_tipo[]" class="form-control" placeholder="Ex: Térmica, caixa de papelão">
+      </div>
+      <div class="col-md-3 mb-2 mb-md-0">
+        <input type="text" name="transporte_obs[]" class="form-control" placeholder="Observações">
+      </div>
+      <div class="col-md-1">
+        <button type="button" class="btn btn-danger btn-sm remove-row" title="Remover">
+          &minus;
+        </button>
+      </div>
+    `;
+    container.appendChild(novaLinha);
+  }
+
+  document.addEventListener('click', function (e) {
+    if (e.target && e.target.classList.contains('remove-row')) {
+      const linha = e.target.closest('.transporte-row');
+      if (linha) linha.remove();
+    }
+  });
+</script>
+
+
+<script>
+  function adicionarProdutor() {
+    const container = document.getElementById('produtores-container');
+    const novaLinha = document.createElement('div');
+    novaLinha.classList.add('row', 'mb-2', 'produtor-row');
+    novaLinha.innerHTML = `
+      <div class="col-md-6 mb-2 mb-md-0">
+        <input type="text" name="produtor_nome[]" class="form-control" placeholder="Nome do produtor">
+      </div>
+      <div class="col-md-5 mb-2 mb-md-0">
+        <input type="text" name="produtor_comunidade[]" class="form-control" placeholder="Comunidade">
+      </div>
+      <div class="col-md-1">
+        <button type="button" class="btn btn-danger btn-sm remove-row" title="Remover">&minus;</button>
+      </div>
+    `;
+    container.appendChild(novaLinha);
+  }
+
+  document.addEventListener('click', function (e) {
+    if (e.target && e.target.classList.contains('remove-row')) {
+      const linha = e.target.closest('.produtor-row');
+      if (linha) linha.remove();
+    }
+  });
+</script>
+
+
 {% endblock %}

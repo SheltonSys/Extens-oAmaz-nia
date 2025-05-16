@@ -13,6 +13,33 @@
 
 <section class="content">
   <div class="container-fluid">
+
+    <!-- Cards Resumo (com dados do agricultor) -->
+    <div class="row">
+      {% for ag in agricultores|slice:":3" %}
+      <div class="col-md-4">
+        <div class="card border-success shadow-sm mb-4">
+          <div class="card-header bg-success text-white">
+            <strong><i class="fas fa-seedling"></i> {{ ag.produto_principal }}</strong>
+          </div>
+          <div class="card-body">
+            <p><strong>🎂 Idade:</strong> {{ ag.idade }} anos</p>
+            <p><strong>⚧ Sexo:</strong> {{ ag.sexo }}</p>
+            <p><strong>🏘 Cidade:</strong> {{ ag.cidade_origem }}</p>
+            <p><strong>🏦 Crédito:</strong> 
+              {% if ag.acesso_credito %}
+                <span class="badge badge-success">Sim</span>
+              {% else %}
+                <span class="badge badge-secondary">Não</span>
+              {% endif %}
+            </p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Tabela Completa -->
     <div class="card card-outline card-success">
       <div class="card-header">
         <h3 class="card-title"><i class="fas fa-list"></i> Lista de Agricultores</h3>
@@ -54,6 +81,7 @@
         </table>
       </div>
     </div>
+
   </div>
 </section>
 {% endblock %}

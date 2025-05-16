@@ -72,24 +72,146 @@
 
             <div class="form-group">
               <label>🎨 Tipo(s) de produção</label>
-              <input type="text" name="tipos_producao" class="form-control">
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="tipos_producao[]" value="Cestaria de fibras naturais" id="producao1">
+                <label class="form-check-label" for="producao1">Cestaria de fibras naturais</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="tipos_producao[]" value="Biojoias" id="producao2">
+                <label class="form-check-label" for="producao2">Biojoias</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="tipos_producao[]" value="Bordados" id="producao3">
+                <label class="form-check-label" for="producao3">Bordados</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="tipos_producao[]" value="Costura criativa" id="producao4">
+                <label class="form-check-label" for="producao4">Costura criativa</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="tipos_producao[]" value="Crochê/tricô" id="producao5">
+                <label class="form-check-label" for="producao5">Crochê/tricô</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="tipos_producao[]" value="Outros" id="producao6" onchange="toggleOutros(this)">
+                <label class="form-check-label" for="producao6">Outros</label>
+              </div>
+
+              <div class="mt-2" id="outros_tipos_div" style="display: none;">
+                <input type="text" name="outros_tipos" class="form-control" placeholder="Descreva o(s) outro(s) tipo(s)">
+              </div>
             </div>
+
+
             <div class="form-group">
               <label>⏱️ Tempo de experiência (anos)</label>
               <input type="text" name="tempo_artesanato" class="form-control">
             </div>
             <div class="form-group">
-              <label>📚 Como aprendeu</label>
-              <input type="text" name="forma_aprendizado" class="form-control">
+              <label>📚 Como aprendeu a atividade?</label>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="forma_aprendizado[]" value="Família/tradição local" id="aprendizado1">
+                <label class="form-check-label" for="aprendizado1">Família/tradição local</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="forma_aprendizado[]" value="Curso ou capacitação" id="aprendizado2">
+                <label class="form-check-label" for="aprendizado2">Curso ou capacitação</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="forma_aprendizado[]" value="Sozinha (autodidata)" id="aprendizado3">
+                <label class="form-check-label" for="aprendizado3">Sozinha (autodidata)</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="forma_aprendizado[]" value="Outro" id="aprendizado4" onchange="toggleOutroAprendizado(this)">
+                <label class="form-check-label" for="aprendizado4">Outro</label>
+              </div>
+
+              <div class="mt-2" id="outro_aprendizado_div" style="display: none;">
+                <input type="text" name="forma_aprendizado_outro" class="form-control" placeholder="Descreva como aprendeu">
+              </div>
             </div>
+
+            
+
             <div class="form-group">
-              <label>⭐ Pontos fortes (qualidade, criatividade...)</label>
-              <input type="text" name="pontos_fortes" class="form-control">
+              <label>⭐ Quais são os principais pontos fortes do seu artesanato?</label>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="pontos_fortes[]" value="Qualidade do material" id="ponto1">
+                <label class="form-check-label" for="ponto1">Qualidade do material</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="pontos_fortes[]" value="Criatividade/design" id="ponto2">
+                <label class="form-check-label" for="ponto2">Criatividade/design</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="pontos_fortes[]" value="Tradição e identidade cultural" id="ponto3">
+                <label class="form-check-label" for="ponto3">Tradição e identidade cultural</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="pontos_fortes[]" value="Boa aceitação do público" id="ponto4">
+                <label class="form-check-label" for="ponto4">Boa aceitação do público</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="pontos_fortes[]" value="Outro" id="ponto5" onchange="toggleOutroPonto(this)">
+                <label class="form-check-label" for="ponto5">Outro</label>
+              </div>
+
+              <div class="mt-2" id="outro_ponto_div" style="display: none;">
+                <input type="text" name="pontos_fortes_outro" class="form-control" placeholder="Descreva outro ponto forte">
+              </div>
             </div>
+
+            
+
             <div class="form-group">
-              <label>🛒 Formas de venda utilizadas</label>
-              <input type="text" name="formas_venda" class="form-control">
+              <label>🛒 Você já vendeu para:</label>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="formas_venda[]" value="Feira local" id="venda1">
+                <label class="form-check-label" for="venda1">Feira local</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="formas_venda[]" value="Cliente direto (porta a porta/boca a boca)" id="venda2">
+                <label class="form-check-label" for="venda2">Cliente direto (porta a porta/boca a boca)</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="formas_venda[]" value="Encomendas personalizadas" id="venda3">
+                <label class="form-check-label" for="venda3">Encomendas personalizadas</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="formas_venda[]" value="Internet/redes sociais" id="venda4">
+                <label class="form-check-label" for="venda4">Internet/redes sociais</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="formas_venda[]" value="Lojas/associações" id="venda5">
+                <label class="form-check-label" for="venda5">Lojas/associações</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="formas_venda[]" value="Nunca vendeu" id="venda6">
+                <label class="form-check-label" for="venda6">Nunca vendeu</label>
+              </div>
             </div>
+
             <div class="form-check mb-2">
               <input type="checkbox" name="material_divulgacao" value="1" class="form-check-input" id="divulgacaoCheck">
               <label class="form-check-label" for="divulgacaoCheck">📢 Possui material de divulgação?</label>
@@ -104,25 +226,173 @@
             <legend class="w-auto text-danger"><i class="fas fa-tools"></i> Desafios e Apoios</legend>
 
             <div class="form-group">
-              <label>🔧 Dificuldades na produção</label>
-              <textarea name="dificuldades_producao" class="form-control"></textarea>
+              <label>🔧 Quais são as maiores dificuldades para produzir o seu artesanato?</label>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="dificuldades_producao[]" value="Falta de matéria-prima" id="dif1">
+                <label class="form-check-label" for="dif1">Falta de matéria-prima</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="dificuldades_producao[]" value="Falta de espaço adequado para produção" id="dif2">
+                <label class="form-check-label" for="dif2">Falta de espaço adequado para produção</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="dificuldades_producao[]" value="Falta de tempo (cuidados com casa/família)" id="dif3">
+                <label class="form-check-label" for="dif3">Falta de tempo (cuidados com casa/família)</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="dificuldades_producao[]" value="Baixo acesso à capacitação ou cursos" id="dif4">
+                <label class="form-check-label" for="dif4">Baixo acesso à capacitação ou cursos</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="dificuldades_producao[]" value="Dificuldade com ferramentas/equipamentos" id="dif5">
+                <label class="form-check-label" for="dif5">Dificuldade com ferramentas/equipamentos</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="dificuldades_producao[]" value="Outro" id="dif6" onchange="toggleOutroDificuldade(this)">
+                <label class="form-check-label" for="dif6">Outro</label>
+              </div>
+
+              <div class="mt-2" id="outro_dificuldade_div" style="display: none;">
+                <input type="text" name="dificuldades_producao_outro" class="form-control" placeholder="Descreva outra dificuldade">
+              </div>
             </div>
+
+            
+
             <div class="form-group">
-              <label>📉 Dificuldades na venda</label>
-              <textarea name="dificuldades_venda" class="form-control"></textarea>
+              <label>📉 Quais são as maiores dificuldades para vender?</label>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="dificuldades_venda[]" value="Falta de pontos de venda" id="vendadif1">
+                <label class="form-check-label" for="vendadif1">Falta de pontos de venda</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="dificuldades_venda[]" value="Falta de transporte" id="vendadif2">
+                <label class="form-check-label" for="vendadif2">Falta de transporte</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="dificuldades_venda[]" value="Pouca visibilidade" id="vendadif3">
+                <label class="form-check-label" for="vendadif3">Pouca visibilidade</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="dificuldades_venda[]" value="Falta de cliente" id="vendadif4">
+                <label class="form-check-label" for="vendadif4">Falta de cliente</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="dificuldades_venda[]" value="Preço baixo pago pelo produto" id="vendadif5">
+                <label class="form-check-label" for="vendadif5">Preço baixo pago pelo produto</label>
+              </div>
             </div>
+
             <div class="form-group">
-              <label>🤝 Já recebeu apoios?</label>
-              <textarea name="apoios_recebidos" class="form-control"></textarea>
+              <label>🤝 Você já teve acesso a algum apoio público ou privado como:</label>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="apoios_recebidos[]" value="Capacitação" id="apoio1">
+                <label class="form-check-label" for="apoio1">Capacitação</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="apoios_recebidos[]" value="Microcrédito" id="apoio2">
+                <label class="form-check-label" for="apoio2">Microcrédito</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="apoios_recebidos[]" value="Associação/cooperativa" id="apoio3">
+                <label class="form-check-label" for="apoio3">Associação/cooperativa</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="apoios_recebidos[]" value="Apoio da prefeitura/secretaria" id="apoio4">
+                <label class="form-check-label" for="apoio4">Apoio da prefeitura/secretaria</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="apoios_recebidos[]" value="Nenhum" id="apoio5">
+                <label class="form-check-label" for="apoio5">Nenhum</label>
+              </div>
             </div>
+
             <div class="form-group">
-              <label>🛠️ Apoios que ajudariam a produzir melhor</label>
-              <textarea name="apoio_producao" class="form-control"></textarea>
+              <label>🛠️ Que tipo de apoio ajudaria você a produzir melhor?</label>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="apoio_producao[]" value="Equipamentos (máquina de costura, tear, ferramentas)" id="apoioProd1">
+                <label class="form-check-label" for="apoioProd1">Equipamentos (máquina de costura, tear, ferramentas)</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="apoio_producao[]" value="Matéria-prima" id="apoioProd2">
+                <label class="form-check-label" for="apoioProd2">Matéria-prima</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="apoio_producao[]" value="Espaço coletivo de produção" id="apoioProd3">
+                <label class="form-check-label" for="apoioProd3">Espaço coletivo de produção</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="apoio_producao[]" value="Formação técnica (design, acabamento e etc.)" id="apoioProd4">
+                <label class="form-check-label" for="apoioProd4">Formação técnica (design, acabamento e etc.)</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="apoio_producao[]" value="Organização de grupo ou associação" id="apoioProd5">
+                <label class="form-check-label" for="apoioProd5">Organização de grupo ou associação</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="apoio_producao[]" value="Outros" id="apoioProd6" onchange="toggleOutroApoioProducao(this)">
+                <label class="form-check-label" for="apoioProd6">Outros</label>
+              </div>
+
+              <div class="mt-2" id="outro_apoio_producao_div" style="display: none;">
+                <input type="text" name="apoio_producao_outros" class="form-control" placeholder="Descreva outro tipo de apoio">
+              </div>
             </div>
+
+            
+
             <div class="form-group">
-              <label>💼 Apoios que ajudariam a vender mais</label>
-              <textarea name="apoio_venda" class="form-control"></textarea>
+              <label>💼 Que tipo de apoio ajudaria a melhorar suas vendas?</label>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="apoio_venda[]" value="Divulgação dos produtos" id="apoioVenda1">
+                <label class="form-check-label" for="apoioVenda1">Divulgação dos produtos</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="apoio_venda[]" value="Loja comunitária ou ponto fixo" id="apoioVenda2">
+                <label class="form-check-label" for="apoioVenda2">Loja comunitária ou ponto fixo</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="apoio_venda[]" value="Apoio com redes sociais" id="apoioVenda3">
+                <label class="form-check-label" for="apoioVenda3">Apoio com redes sociais</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="apoio_venda[]" value="Participação em feiras" id="apoioVenda4">
+                <label class="form-check-label" for="apoioVenda4">Participação em feiras</label>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="apoio_venda[]" value="Formação em precificação ou empreendedorismo" id="apoioVenda5">
+                <label class="form-check-label" for="apoioVenda5">Formação em precificação ou empreendedorismo</label>
+              </div>
             </div>
+
+
           </fieldset>
 
           <fieldset class="border p-3 mb-4">
@@ -132,6 +402,25 @@
               <textarea name="fala_artesa" class="form-control" rows="3" placeholder="Comentários livres, sentimentos, sugestões..."></textarea>
             </div>
           </fieldset>
+
+          <fieldset class="border p-3 mb-4">
+  <legend class="w-auto text-primary"><i class="fas fa-camera"></i> Foto de Evidência</legend>
+
+  <div class="form-group text-center">
+    <video id="video" width="100%" height="240" autoplay class="border rounded mb-2"></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <input type="hidden" name="foto_base64" id="foto_base64">
+    <button type="button" class="btn btn-outline-primary" onclick="capturarFoto()">
+      <i class="fas fa-camera"></i> Tirar Foto
+    </button>
+  </div>
+
+  <div id="preview" class="text-center mt-3" style="display:none;">
+    <p class="text-success"><i class="fas fa-check-circle"></i> Foto capturada com sucesso!</p>
+    <img id="foto_preview" src="#" alt="Prévia da Foto" class="img-thumbnail" style="max-width: 100%;">
+  </div>
+</fieldset>
+
 
         </div>
 
@@ -144,4 +433,75 @@
     </form>
   </div>
 </section>
+
+
+<script>
+  function toggleOutros(checkbox) {
+    const outrosDiv = document.getElementById('outros_tipos_div');
+    outrosDiv.style.display = checkbox.checked ? 'block' : 'none';
+  }
+</script>
+
+<script>
+  function toggleOutroAprendizado(checkbox) {
+    const outroDiv = document.getElementById('outro_aprendizado_div');
+    outroDiv.style.display = checkbox.checked ? 'block' : 'none';
+  }
+</script>
+
+<script>
+  function toggleOutroPonto(checkbox) {
+    const outroDiv = document.getElementById('outro_ponto_div');
+    outroDiv.style.display = checkbox.checked ? 'block' : 'none';
+  }
+</script>
+
+<script>
+  function toggleOutroDificuldade(checkbox) {
+    const outroDiv = document.getElementById('outro_dificuldade_div');
+    outroDiv.style.display = checkbox.checked ? 'block' : 'none';
+  }
+</script>
+
+<script>
+  function toggleOutroApoioProducao(checkbox) {
+    const outroDiv = document.getElementById('outro_apoio_producao_div');
+    outroDiv.style.display = checkbox.checked ? 'block' : 'none';
+  }
+</script>
+
+
+
+<script>
+  // Ativa a câmera
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      document.getElementById('video').srcObject = stream;
+    })
+    .catch(error => {
+      console.error("Erro ao acessar câmera: ", error);
+      alert("Não foi possível acessar a câmera. Verifique permissões.");
+    });
+
+  // Captura a imagem
+  function capturarFoto() {
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const preview = document.getElementById('preview');
+    const fotoBase64Input = document.getElementById('foto_base64');
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const base64 = canvas.toDataURL('image/jpeg');
+    fotoBase64Input.value = base64;
+
+    document.getElementById('foto_preview').src = base64;
+    preview.style.display = 'block';
+  }
+</script>
+
 {% endblock %}

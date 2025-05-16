@@ -22,7 +22,12 @@
             <h5 class="widget-user-desc">{{ artesa.escolaridade }}</h5>
           </div>
           <div class="widget-user-image">
-            <img class="img-circle elevation-2" src="{% static 'assets/dist/img/avatar.png' %}" alt="User Avatar">
+            {% if artesa.foto_evidencia %}
+  <img class="img-circle elevation-2" src="{{ artesa.foto_evidencia.url }}" alt="Foto da Artesã">
+{% else %}
+  <img class="img-circle elevation-2" src="{% static 'assets/dist/img/avatar.png' %}" alt="Avatar Padrão">
+{% endif %}
+
           </div>
           <div class="card-footer">
             <div class="row">

@@ -38,15 +38,20 @@
                 <input type="text" name="numero_ficha" class="form-control">
               </div>
             </div>
+
             <div class="form-group">
               <label>👤 Entrevistador</label>
-              <input type="text" name="entrevistador" class="form-control">
+              <input type="text" name="entrevistador" class="form-control" value="{{ request.user.username }}" readonly>
+
+
             </div>
+
+
           </fieldset>
 
           <!-- Seção: Informações Pessoais -->
           <fieldset class="border p-3 mb-4">
-            <legend class="w-auto text-primary"><i class="fas fa-user"></i> Informações Pessoais</legend>
+            <legend class="w-auto text-primary"><i class="fas fa-user"></i> Perfil do Feirante</legend>
             <div class="form-row">
               <div class="form-group col-md-2">
                 <label>🎂 Idade</label>
@@ -60,10 +65,23 @@
                   <option>Outro</option>
                 </select>
               </div>
+
               <div class="form-group col-md-4">
-                <label>🎓 Escolaridade</label>
-                <input type="text" name="escolaridade" class="form-control">
-              </div>
+  <label for="escolaridade"><strong>🎓 Escolaridade</strong></label>
+  <select name="escolaridade" id="escolaridade" class="form-control">
+    <option value="">Selecione...</option>
+    <option value="Não alfabetizado">Não alfabetizado</option>
+    <option value="Fund. Incompleto">Fund. Incompleto</option>
+    <option value="Fund. Completo">Fund. Completo</option>
+    <option value="Médio Incompleto">Médio Incompleto</option>
+    <option value="Médio Completo">Médio Completo</option>
+    <option value="Sup. Incompleto">Sup. Incompleto</option>
+    <option value="Sup. Completo">Sup. Completo</option>
+  </select>
+</div>
+
+
+
               <div class="form-group col-md-3">
                 <label>🏘️ Cidade de Origem</label>
                 <input type="text" name="cidade_origem" class="form-control">
@@ -71,7 +89,7 @@
             </div>
             <div class="form-row">
               <div class="form-group col-md-6">
-                <label>⏱️ Tempo na Feira</label>
+                <label>⏱️ Tempo na Feira em anos</label>
                 <input type="text" name="tempo_feira" class="form-control">
               </div>
               <div class="form-group col-md-6">
@@ -82,96 +100,246 @@
           </fieldset>
 
           <!-- Seção: Relações Familiares -->
-          <fieldset class="border p-3 mb-4">
-            <legend class="w-auto text-warning"><i class="fas fa-users"></i> Relações Familiares</legend>
-            <div class="form-group">
-              <label>👨‍👩‍👧‍👦 Trabalha com familiares?</label>
-              <input type="checkbox" name="trabalha_familiares" value="1"> Sim
-            </div>
-            <div class="form-row">
-              <div class="form-group col-md-3">
-                <label>👥 Qtde de familiares</label>
-                <input type="number" name="qtd_familiares" class="form-control">
-              </div>
-              <div class="form-group col-md-9">
-                <label>📑 Grau de parentesco</label>
-                <input type="text" name="grau_parentesco" class="form-control">
-              </div>
-            </div>
-            <div class="form-group">
-              <label>🧒 Crianças ajudam?</label>
-              <input type="checkbox" name="criancas_ajudam" value="1"> Sim
-              <input type="text" name="atividades_criancas" class="form-control mt-2" placeholder="Quais atividades?">
-            </div>
-            <div class="form-group">
-              <label>🧓 Idosos ajudam?</label>
-              <input type="checkbox" name="idosos_ajudam" value="1"> Sim
-              <input type="text" name="atividades_idosos" class="form-control mt-2" placeholder="Quais atividades?">
-            </div>
-          </fieldset>
+<fieldset class="border p-3 mb-4">
+  <legend class="w-auto text-warning">
+    <i class="fas fa-users"></i> Organização Familiar do Trabalho
+  </legend>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label>👨‍👩‍👧‍👦 Trabalha com familiares?</label><br>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" name="trabalha_familiares" value="1" id="check_familiares">
+        <label class="form-check-label" for="check_familiares">Sim</label>
+      </div>
+    </div>
+
+    <div class="form-group col-md-6">
+      <label>👥 Nº de familiares envolvidos</label>
+      <input type="number" name="qtd_familiares" class="form-control" min="0">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label><strong>📑 Grau de parentesco</strong></label>
+    <div class="d-md-flex flex-wrap gap-2">
+      <div class="form-check mr-3">
+        <input class="form-check-input" type="radio" name="grau_parentesco" id="parentesco1" value="Cônjuge">
+        <label class="form-check-label" for="parentesco1">Cônjuge</label>
+      </div>
+      <div class="form-check mr-3">
+        <input class="form-check-input" type="radio" name="grau_parentesco" id="parentesco2" value="Filhos">
+        <label class="form-check-label" for="parentesco2">Filhos</label>
+      </div>
+      <div class="form-check mr-3">
+        <input class="form-check-input" type="radio" name="grau_parentesco" id="parentesco3" value="Pais">
+        <label class="form-check-label" for="parentesco3">Pais</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="grau_parentesco" id="parentesco_outros" value="" onclick="toggleOutroParentesco(true)">
+        <label class="form-check-label" for="parentesco_outros">Outros</label>
+      </div>
+    </div>
+    <input type="text" class="form-control mt-2" id="input_outro_parentesco" name="outro_parentesco" placeholder="Informe o grau de parentesco" oninput="setOutroParentesco(this.value)" style="display: none;">
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label>🧒 Crianças ajudam?</label>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" name="criancas_ajudam" value="1" id="check_criancas">
+        <label class="form-check-label" for="check_criancas">Sim</label>
+      </div>
+      <input type="text" name="atividades_criancas" class="form-control mt-2" placeholder="Quais atividades?">
+    </div>
+
+    <div class="form-group col-md-6">
+      <label>🧓 Idosos ajudam?</label>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" name="idosos_ajudam" value="1" id="check_idosos">
+        <label class="form-check-label" for="check_idosos">Sim</label>
+      </div>
+      <input type="text" name="atividades_idosos" class="form-control mt-2" placeholder="Quais atividades?">
+    </div>
+  </div>
+</fieldset>
+
+
+
 
           <!-- Seção: Produção e Renda -->
-          <fieldset class="border p-3 mb-4">
-            <legend class="w-auto text-danger"><i class="fas fa-coins"></i> Produção e Renda</legend>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label>🌾 Produto principal</label>
-                <input type="text" name="produto_principal" class="form-control">
-              </div>
-              <div class="form-group col-md-6">
-                <label>📦 Origem do produto</label>
-                <input type="text" name="origem_produto" class="form-control">
-              </div>
-            </div>
-            <div class="form-group">
-              <label>💰 Faturamento médio</label>
-              <input type="text" name="faturamento" class="form-control">
-            </div>
-            <div class="form-group">
-              <label>📉 Custos principais</label>
-              <textarea name="custos_principais" class="form-control"></textarea>
-            </div>
-            <div class="form-group">
-              <label>📊 A renda varia?</label>
-              <input type="checkbox" name="renda_varia" value="1"> Sim
-            </div>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label>📈 Meses bons</label>
-                <input type="text" name="meses_bons" class="form-control">
-              </div>
-              <div class="form-group col-md-6">
-                <label>📉 Meses fracos</label>
-                <input type="text" name="meses_fracos" class="form-control">
-              </div>
-            </div>
-          </fieldset>
+<fieldset class="border p-3 mb-4">
+  <legend class="w-auto text-danger">
+    <i class="fas fa-coins"></i> Renda e Economia
+  </legend>
+
+  <!-- Produto principal e origem -->
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label>🌾 Produto principal</label>
+      <input type="text" name="produto_principal" class="form-control">
+    </div>
+
+    <div class="form-group col-md-6">
+      <label><strong>📦 Origem do produto</strong></label><br>
+      <div class="d-flex flex-wrap">
+        <div class="form-check mr-3">
+          <input class="form-check-input" type="radio" name="origem_produto" id="origem1" value="Produzido">
+          <label class="form-check-label" for="origem1">Produzido</label>
+        </div>
+        <div class="form-check mr-3">
+          <input class="form-check-input" type="radio" name="origem_produto" id="origem2" value="Revenda">
+          <label class="form-check-label" for="origem2">Revenda</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="origem_produto" id="origem3" value="Ambos">
+          <label class="form-check-label" for="origem3">Ambos</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Faturamento -->
+  <div class="form-group">
+    <label><strong>💰 Faturamento médio semanal</strong></label>
+    <div class="d-flex flex-wrap">
+      <div class="form-check mr-3">
+        <input class="form-check-input" type="radio" name="faturamento" id="fat1" value="até R$300">
+        <label class="form-check-label" for="fat1">até R$300</label>
+      </div>
+      <div class="form-check mr-3">
+        <input class="form-check-input" type="radio" name="faturamento" id="fat2" value="R$301–600">
+        <label class="form-check-label" for="fat2">R$301–600</label>
+      </div>
+      <div class="form-check mr-3">
+        <input class="form-check-input" type="radio" name="faturamento" id="fat3" value="R$601–1.000">
+        <label class="form-check-label" for="fat3">R$601–1.000</label>
+      </div>
+      <div class="form-check mr-3">
+        <input class="form-check-input" type="radio" name="faturamento" id="fat4" value="R$1.001–2.000">
+        <label class="form-check-label" for="fat4">R$1.001–2.000</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="faturamento" id="fat5" value="acima de R$2.000">
+        <label class="form-check-label" for="fat5">acima de R$2.000</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custos principais -->
+  <div class="form-group">
+    <label><strong>📉 Custos principais</strong></label>
+    <div class="d-flex flex-column flex-md-row flex-wrap gap-3">
+      <div class="form-check mr-4">
+        <input class="form-check-input" type="checkbox" name="custos_principais[]" id="custo1" value="Transporte">
+        <label class="form-check-label" for="custo1">Transporte</label>
+      </div>
+      <div class="form-check mr-4">
+        <input class="form-check-input" type="checkbox" name="custos_principais[]" id="custo2" value="Compra de produtos">
+        <label class="form-check-label" for="custo2">Compra de produtos</label>
+      </div>
+      <div class="form-check mr-4">
+        <input class="form-check-input" type="checkbox" name="custos_principais[]" id="custo3" value="Aluguel">
+        <label class="form-check-label" for="custo3">Aluguel</label>
+      </div>
+      <div class="form-check mr-4">
+        <input class="form-check-input" type="checkbox" name="custos_principais[]" id="custo4" value="Energia/água">
+        <label class="form-check-label" for="custo4">Energia/água</label>
+      </div>
+      <div class="form-check w-100 mt-2">
+        <input class="form-check-input" type="checkbox" id="custo_outros" value="" onclick="toggleOutroCusto(this.checked)">
+        <label class="form-check-label" for="custo_outros">Outros:</label>
+        <input type="text" class="form-control mt-2" id="input_outro_custo" placeholder="Descreva..." oninput="setOutroCusto(this.value)" style="display: none;">
+      </div>
+    </div>
+  </div>
+
+  <!-- Variação de renda -->
+  <div class="form-group">
+    <label><strong>📊 A renda varia?</strong></label><br>
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" name="renda_varia" value="1" id="rendaVariaCheck">
+      <label class="form-check-label" for="rendaVariaCheck">Sim</label>
+    </div>
+  </div>
+
+  <!-- Meses bons/fracos -->
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label>📈 Meses bons</label>
+      <input type="text" name="meses_bons" class="form-control">
+    </div>
+    <div class="form-group col-md-6">
+      <label>📉 Meses fracos</label>
+      <input type="text" name="meses_fracos" class="form-control">
+    </div>
+  </div>
+</fieldset>
+
+
+
+
+
+
 
           <!-- Seção: Estrutura da Feira -->
-          <fieldset class="border p-3 mb-4">
-            <legend class="w-auto text-secondary"><i class="fas fa-tools"></i> Estrutura da Feira</legend>
-            <div class="form-group">
-              <label>🛣️ Acesso</label>
-              <input type="text" name="acesso" class="form-control">
-            </div>
-            <div class="form-check">
-              <input type="checkbox" name="agua" value="1" class="form-check-input" id="aguaCheck">
-              <label class="form-check-label" for="aguaCheck">💧 Água disponível</label>
-            </div>
-            <div class="form-check">
-              <input type="checkbox" name="banheiro" value="1" class="form-check-input" id="banheiroCheck">
-              <label class="form-check-label" for="banheiroCheck">🚻 Banheiro</label>
-            </div>
-            <div class="form-group">
-              <label>🧼 Condições de higiene</label>
-              <input type="text" name="higiene" class="form-control">
-            </div>
-            <div class="form-group">
-              <label>🔐 Sente-se seguro?</label>
-              <input type="checkbox" name="seguranca" value="1"> Sim
-              <input type="text" name="motivo_inseguranca" class="form-control mt-1" placeholder="Se não, explique.">
-            </div>
-          </fieldset>
+<fieldset class="border p-3 mb-4">
+  <legend class="w-auto text-secondary"><i class="fas fa-tools"></i> Estrutura da Feira</legend>
+
+  <!-- Condição de Acesso -->
+  <div class="form-group">
+  <label><strong>🛣️ Condição de Acesso ao Local</strong></label><br>
+  <div class="d-flex flex-wrap gap-3">
+    {% for val in opcoes_acesso %}
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="acesso" id="acesso_{{ forloop.counter }}" value="{{ val }}">
+      <label class="form-check-label" for="acesso_{{ forloop.counter }}">{{ val }}</label>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+  <!-- Água e Banheiro -->
+  <div class="form-row mb-3">
+    <div class="form-check mr-4">
+      <input type="checkbox" name="agua" value="1" class="form-check-input" id="aguaCheck">
+      <label class="form-check-label" for="aguaCheck">💧 Água disponível</label>
+    </div>
+    <div class="form-check">
+      <input type="checkbox" name="banheiro" value="1" class="form-check-input" id="banheiroCheck">
+      <label class="form-check-label" for="banheiroCheck">🚻 Banheiro</label>
+    </div>
+  </div>
+
+  <!-- Higiene -->
+  <div class="form-group">
+  <label><strong>🧼 Condições de higiene do local</strong></label><br>
+  <div class="d-flex flex-wrap gap-3">
+    {% for val in opcoes_higiene %}
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="higiene" id="higiene_{{ forloop.counter }}" value="{{ val }}">
+      <label class="form-check-label" for="higiene_{{ forloop.counter }}">{{ val }}</label>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+  <!-- Segurança -->
+  <div class="form-group">
+    <label><strong>🔐 Segurança no local</strong></label>
+    <div class="form-check mb-2">
+      <input type="checkbox" name="seguranca" value="1" class="form-check-input" id="segurancaCheck">
+      <label class="form-check-label" for="segurancaCheck">Sente-se seguro?</label>
+    </div>
+    <input type="text" name="motivo_inseguranca" class="form-control" placeholder="Se não, explique.">
+  </div>
+</fieldset>
+
+
+
+
 
           <!-- Seção: Organização e Políticas Públicas -->
           <fieldset class="border p-3 mb-4">
@@ -186,10 +354,31 @@
               <input type="checkbox" name="capacitacao" value="1"> Sim
               <input type="text" name="capacitador" class="form-control mt-1" placeholder="Quem capacitou?">
             </div>
+
             <div class="form-group">
-              <label>🏛️ Apoio de políticas públicas</label>
-              <textarea name="apoio_publico" class="form-control"></textarea>
-            </div>
+  <label><strong>🏛️ Recebe apoio de políticas públicas?</strong></label>
+  <div class="d-flex flex-column flex-md-row flex-wrap gap-3">
+    <div class="form-check mr-4">
+      <input class="form-check-input" type="checkbox" name="apoio_publico[]" id="apoio1" value="Bolsa Família / Auxílio Brasil">
+      <label class="form-check-label" for="apoio1">Bolsa Família / Auxílio Brasil</label>
+    </div>
+    <div class="form-check mr-4">
+      <input class="form-check-input" type="checkbox" name="apoio_publico[]" id="apoio2" value="Crédito Rural / Pronaf">
+      <label class="form-check-label" for="apoio2">Crédito Rural / Pronaf</label>
+    </div>
+    <div class="form-check mr-4">
+      <input class="form-check-input" type="checkbox" name="apoio_publico[]" id="apoio3" value="Apoio municipal">
+      <label class="form-check-label" for="apoio3">Apoio municipal</label>
+    </div>
+    <div class="form-check w-100 mt-2">
+      <input class="form-check-input" type="checkbox" id="apoio_outros" value="" onclick="toggleOutroApoio(this.checked)">
+      <label class="form-check-label" for="apoio_outros">Outros:</label>
+      <input type="text" class="form-control mt-2" id="input_outro_apoio" placeholder="Descreva..." oninput="setOutroApoio(this.value)" style="display: none;">
+    </div>
+  </div>
+</div>
+
+
             <div class="form-group">
               <label>🏦 Acesso a crédito?</label>
               <input type="checkbox" name="acesso_credito" value="1"> Sim
@@ -208,4 +397,81 @@
     </form>
   </div>
 </section>
+
+
+
+<script>
+  function toggleOutroParentesco(show) {
+    const input = document.getElementById('input_outro_parentesco');
+    input.style.display = show ? 'block' : 'none';
+    if (show) input.focus();
+  }
+
+  function setOutroParentesco(value) {
+    document.getElementById('parentesco_outros').value = value;
+  }
+
+  // Garante ocultar se outro for clicado
+  document.querySelectorAll('input[name="grau_parentesco"]').forEach(el => {
+    el.addEventListener('change', function () {
+      if (this.id !== 'parentesco_outros') {
+        toggleOutroParentesco(false);
+      }
+    });
+  });
+</script>
+
+
+<script>
+  function toggleOutroCusto(show) {
+    const input = document.getElementById('input_outro_custo');
+    input.style.display = show ? 'block' : 'none';
+    if (!show) input.value = '';
+  }
+
+  function setOutroCusto(value) {
+    document.getElementById('custo_outros').value = value;
+  }
+</script>
+
+
+<script>
+  function toggleOutroApoio(show) {
+    const input = document.getElementById('input_outro_apoio');
+    input.style.display = show ? 'block' : 'none';
+    if (!show) input.value = '';
+  }
+
+  function setOutroApoio(value) {
+    document.getElementById('apoio_outros').value = value;
+  }
+</script>
+
+
+<div id="mensagem-sucesso" class="alert alert-success text-center shadow" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999;">
+  ✅ Cadastro salvo com sucesso!
+</div>
+
+<script>
+  // Exibe a mensagem se houver flag no localStorage
+  if (localStorage.getItem('cadastro_agricultor_sucesso')) {
+    localStorage.removeItem('cadastro_agricultor_sucesso');
+    const msg = document.getElementById('mensagem-sucesso');
+    msg.style.display = 'block';
+    setTimeout(() => {
+      msg.style.display = 'none';
+    }, 4000); // esconde após 4 segundos
+  }
+
+  // Marca o sucesso antes de enviar o formulário
+  const form = document.querySelector('form');
+  if (form) {
+    form.addEventListener('submit', () => {
+      localStorage.setItem('cadastro_agricultor_sucesso', '1');
+    });
+  }
+</script>
+
+
+
 {% endblock %}

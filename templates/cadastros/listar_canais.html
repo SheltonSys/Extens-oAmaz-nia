@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
+
+{% load static %}
 
 {% block title %}Listagem de Canais de Comercialização | EXTENSÃO Amazônia{% endblock %}
 
@@ -41,34 +44,53 @@
     </div>
 
     <div class="card card-outline card-secondary">
-      <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-table"></i> Tabela Detalhada</h3>
-      </div>
-      <div class="card-body table-responsive">
-        <table class="table table-bordered table-sm table-striped">
-          <thead class="thead-light">
-            <tr>
-              <th>Data</th>
-              <th>Comunidade</th>
-              <th>Entrevistado</th>
-              <th>Rota</th>
-              <th>Transporte</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for canal in canais %}
-            <tr>
-              <td>{{ canal.data|date:"d/m/Y" }}</td>
-              <td>{{ canal.comunidade }}</td>
-              <td>{{ canal.nome_entrevistado }}</td>
-              <td>{{ canal.rota_nome }}</td>
-              <td>{{ canal.transporte_embalagem }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
+  <div class="card-header">
+    <h3 class="card-title"><i class="fas fa-table"></i> Tabela Detalhada</h3>
+  </div>
+  <div class="card-body table-responsive">
+    <table class="table table-bordered table-sm table-striped align-middle">
+      <thead class="thead-light text-center">
+        <tr>
+          <th>Data</th>
+          <th>Comunidade</th>
+          <th>Entrevistado</th>
+          <th>Rota</th>
+          <th>Transporte e Embalagem</th>
+        </tr>
+      </thead>
+<tbody>
+  {% for canal in canais %}
+  <tr>
+    <td class="text-center">{{ canal.data|date:"d/m/Y" }}</td>
+    <td>{{ canal.comunidade }}</td>
+    <td>{{ canal.nome_entrevistado }}</td>
+    <td>{{ canal.rota_nome }}</td>
+    <td>
+      {% if canal.transporte_embalagem %}
+        {% for t in canal.transporte_embalagem %}
+          <div>
+            <strong>{{ t.transporte|default:"–" }}</strong> /
+            <span>{{ t.embalagem|default:"–" }}</span><br>
+            <small class="text-muted">{{ t.observacao|default:"–" }}</small>
+          </div>
+          {% if not forloop.last %}
+            <hr class="my-1" />
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        <span class="text-muted">–</span>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
+
+    </table>
+  </div>
+</div>
+
+
+
   </div>
 </section>
 {% endblock %}

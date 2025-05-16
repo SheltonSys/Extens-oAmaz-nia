@@ -14,6 +14,10 @@ from django.http import HttpResponse
 from .models import Evento
 from datetime import datetime
 
+import base64
+from django.core.files.base import ContentFile
+
+
 
 
 
@@ -35,11 +39,10 @@ class CustomLoginView(LoginView):
 
 ####**************************************************************************************************************************************
 
-from django.shortcuts import render
 from .models import Artesa, CanalComercializacao, Feirante, Agricultor, Evento
 
 def dashboard(request):
-    # Resumo para tabela
+    # Tabela
     resumo_categorias = [
         {'Categoria': 'Artesãs', 'Total': Artesa.objects.count(), 'Novos': 3},
         {'Categoria': 'Canais', 'Total': CanalComercializacao.objects.count(), 'Novos': 2},
@@ -47,13 +50,11 @@ def dashboard(request):
         {'Categoria': 'Agricultores', 'Total': Agricultor.objects.count(), 'Novos': 5},
     ]
 
-    # Busca eventos do banco ordenados por data
+    # Eventos
     eventos = Evento.objects.all().order_by('data')
-    calendario_eventos = [
-        {'Data': e.data, 'Evento': e.titulo} for e in eventos
-    ]
+    calendario_eventos = [{'Data': e.data, 'Evento': e.titulo} for e in eventos]
 
-    # Cards principais
+    # Cards
     cards = [
         {'categoria': 'Artesãs', 'total': Artesa.objects.count(), 'cor': 'info', 'icon': 'fas fa-female', 'url': 'cadastrar_artesa', 'label': 'Cadastrar'},
         {'categoria': 'Canais de Comercialização', 'total': CanalComercializacao.objects.count(), 'cor': 'success', 'icon': 'fas fa-store', 'url': 'cadastrar_canal', 'label': 'Cadastrar'},
@@ -61,28 +62,45 @@ def dashboard(request):
         {'categoria': 'Agricultores', 'total': Agricultor.objects.count(), 'cor': 'danger', 'icon': 'fas fa-tractor', 'url': 'cadastrar_agricultor', 'label': 'Cadastrar'},
     ]
 
-    # Gráficos simulados
+    # Simula dados — substitua depois com queries reais
+    renda = ['até R$300', 'R$301–600', 'R$601–1.000', 'R$601–1.000']
+    canais = ['Feira', 'Comércio', 'Online', 'Feira']
+    periodicidade = ['Semanal', 'Mensal', 'Semanal']
+    credito = ['Sim', 'Não', 'Sim', 'Sim']
+
+    grafico_renda = gerar_grafico_base64("Renda do Artesanato", list(Counter(renda).keys()), list(Counter(renda).values()))
+    grafico_canais = gerar_grafico_base64("Tipos de Canais", list(Counter(canais).keys()), list(Counter(canais).values()))
+    grafico_feiras = gerar_grafico_base64("Periodicidade das Feiras", list(Counter(periodicidade).keys()), list(Counter(periodicidade).values()))
+    grafico_credito = gerar_grafico_base64("Acesso ao Crédito", list(Counter(credito).keys()), list(Counter(credito).values()))
+    grafico_barras = gerar_grafico_base64("Comparativo Geral", [c['Categoria'] for c in resumo_categorias], [c['Total'] for c in resumo_categorias])
+
     graficos = [
-        {'titulo': 'Renda do Artesanato', 'cor': 'info', 'icon': 'fas fa-female', 'imagem': '<base64>'},
-        {'titulo': 'Tipos de Canais', 'cor': 'success', 'icon': 'fas fa-store', 'imagem': '<base64>'},
-        {'titulo': 'Periodicidade das Feiras', 'cor': 'warning', 'icon': 'fas fa-people-carry', 'imagem': '<base64>'},
-        {'titulo': 'Acesso ao Crédito', 'cor': 'danger', 'icon': 'fas fa-tractor', 'imagem': '<base64>'},
+        {'titulo': 'Renda do Artesanato', 'cor': 'info', 'icon': 'fas fa-female', 'imagem': grafico_renda},
+        {'titulo': 'Tipos de Canais', 'cor': 'success', 'icon': 'fas fa-store', 'imagem': grafico_canais},
+        {'titulo': 'Periodicidade das Feiras', 'cor': 'warning', 'icon': 'fas fa-people-carry', 'imagem': grafico_feiras},
+        {'titulo': 'Acesso ao Crédito', 'cor': 'danger', 'icon': 'fas fa-tractor', 'imagem': grafico_credito},
     ]
 
     context = {
         'cards': cards,
         'graficos': graficos,
-        'grafico_barras': '<base64>',
+        'grafico_barras': grafico_barras,
         'resumo_categorias': resumo_categorias,
         'calendario_eventos': calendario_eventos,
     }
     return render(request, 'dashboard.html', context)
 
 
+
 ####**************************************************************************************************************************************
+
+from django.shortcuts import render, redirect
+from .models import Artesa
 
 def cadastrar_artesa(request):
     if request.method == 'POST':
+        foto_base64 = request.POST.get('foto_base64')
+
         artesa = Artesa(
             nome=request.POST.get('nome'),
             idade=request.POST.get('idade'),
@@ -91,49 +109,151 @@ def cadastrar_artesa(request):
             familiares_na_producao=request.POST.get('familiares_na_producao'),
             renda_artesanato=request.POST.get('renda_artesanato'),
 
-            tipos_producao=request.POST.get('tipos_producao'),
+            tipos_producao=', '.join(request.POST.getlist('tipos_producao[]')),
             tempo_artesanato=request.POST.get('tempo_artesanato'),
-            forma_aprendizado=request.POST.get('forma_aprendizado'),
+            forma_aprendizado=', '.join(request.POST.getlist('forma_aprendizado[]')),
 
-            pontos_fortes=request.POST.get('pontos_fortes'),
-            formas_venda=request.POST.get('formas_venda'),
+            pontos_fortes=', '.join(request.POST.getlist('pontos_fortes[]')),
+            formas_venda=', '.join(request.POST.getlist('formas_venda[]')),
             material_divulgacao=bool(request.POST.get('material_divulgacao')),
             interesse_feiras=bool(request.POST.get('interesse_feiras')),
 
-            dificuldades_producao=request.POST.get('dificuldades_producao'),
-            dificuldades_venda=request.POST.get('dificuldades_venda'),
-            apoios_recebidos=request.POST.get('apoios_recebidos'),
+            dificuldades_producao=', '.join(request.POST.getlist('dificuldades_producao[]')),
+            dificuldades_venda=', '.join(request.POST.getlist('dificuldades_venda[]')),
+            apoios_recebidos=', '.join(request.POST.getlist('apoios_recebidos[]')),
 
-            apoio_producao=request.POST.get('apoio_producao'),
-            apoio_venda=request.POST.get('apoio_venda'),
+            apoio_producao=', '.join(request.POST.getlist('apoio_producao[]')),
+            apoio_venda=', '.join(request.POST.getlist('apoio_venda[]')),
             fala_artesa=request.POST.get('fala_artesa'),
         )
+
+        # Converte base64 para imagem e salva
+        if foto_base64 and foto_base64.startswith('data:image'):
+            format, imgstr = foto_base64.split(';base64,')
+            ext = format.split('/')[-1]
+            image_data = ContentFile(base64.b64decode(imgstr), name=f"{artesa.nome}_foto.{ext}")
+            artesa.foto_evidencia = image_data
+
         artesa.save()
-        return redirect('dashboard')  # redirecionar após o cadastro
+        return redirect('dashboard')
+
     return render(request, 'cadastros/cadastrar_artesa.html')
+
+
 ####**************************************************************************************************************************************
+
+import json  # necessário para salvar como JSON
 
 def cadastrar_canal(request):
     if request.method == 'POST':
+        # --- Canais Identificados ---
+        canais_zip = zip(
+            request.POST.getlist('canal_canal[]'),
+            request.POST.getlist('canal_tipo[]'),
+            request.POST.getlist('canal_nome[]'),
+            request.POST.getlist('canal_volume[]'),
+            request.POST.getlist('canal_obs[]')
+        )
+
+        canais_identificados = []
+        for canal, tipo, nome, volume, obs in canais_zip:
+            if canal or nome:
+                canais_identificados.append({
+                    'canal': canal,
+                    'tipo': tipo,
+                    'nome': nome,
+                    'volume': volume,
+                    'observacao': obs
+                })
+        canais_identificados_json = json.dumps(canais_identificados)
+
+        # --- Itinerário da Rota ---
+        paradas_zip = zip(
+            request.POST.getlist('parada_ponto[]'),
+            request.POST.getlist('parada_tempo[]'),
+            request.POST.getlist('parada_obs[]')
+        )
+
+        rota_itinerario = []
+        for ponto, tempo, obs in paradas_zip:
+            if ponto or tempo or obs:
+                rota_itinerario.append({
+                    'ponto': ponto,
+                    'tempo': tempo,
+                    'observacao': obs
+                })
+        rota_itinerario_json = json.dumps(rota_itinerario)
+
+        # --- Transporte e Embalagem ---
+        transporte_zip = zip(
+            request.POST.getlist('transporte_tipo[]'),
+            request.POST.getlist('embalagem_tipo[]'),
+            request.POST.getlist('transporte_obs[]')
+        )
+
+        transporte_embalagem = []
+        for transporte, embalagem, obs in transporte_zip:
+            if transporte or embalagem or obs:
+                transporte_embalagem.append({
+                    'transporte': transporte,
+                    'embalagem': embalagem,
+                    'observacao': obs
+                })
+        transporte_embalagem_json = json.dumps(transporte_embalagem)
+
+        # --- Produtores Inseridos ---
+        produtores_zip = zip(
+            request.POST.getlist('produtor_nome[]'),
+            request.POST.getlist('produtor_comunidade[]')
+        )
+
+        produtores_inseridos = []
+        for nome, comunidade in produtores_zip:
+            if nome or comunidade:
+                produtores_inseridos.append({
+                    'nome': nome,
+                    'comunidade': comunidade
+                })
+        produtores_inseridos_json = json.dumps(produtores_inseridos)
+
+        # --- Captura segura para pontos_parada ---
+        pontos_parada = request.POST.get('pontos_parada', '').strip()
+        if not pontos_parada:
+            pontos_parada = 'Não informado'
+
+        # --- Salvar tudo no banco ---
         canal = CanalComercializacao(
             responsavel=request.POST.get('responsavel'),
             data=request.POST.get('data'),
             comunidade=request.POST.get('comunidade'),
             nome_entrevistado=request.POST.get('nome_entrevistado'),
-            canais_identificados=request.POST.get('canais_identificados'),
+            canais_identificados=canais_identificados_json,
             rota_nome=request.POST.get('rota_nome'),
-            rota_itinerario=request.POST.get('rota_itinerario'),
-            pontos_parada=request.POST.get('pontos_parada'),
-            transporte_embalagem=request.POST.get('transporte_embalagem'),
-            produtores_inseridos=request.POST.get('produtores_inseridos')
+            rota_itinerario=rota_itinerario_json,
+            pontos_parada=pontos_parada,
+            transporte_embalagem=transporte_embalagem_json,
+            produtores_inseridos=produtores_inseridos_json
         )
         canal.save()
         return redirect('dashboard')
+
     return render(request, 'cadastros/cadastrar_canal.html')
+
+
+
+
 ####**************************************************************************************************************************************
+
+import json
+import base64
+from django.core.files.base import ContentFile
+from django.shortcuts import render, redirect
+from .models import Feirante
 
 def cadastrar_feirante(request):
     if request.method == 'POST':
+        foto_base64 = request.POST.get('foto_base64')
+
         feirante = Feirante(
             nome_feira=request.POST.get('nome_feira'),
             local=request.POST.get('local'),
@@ -141,30 +261,49 @@ def cadastrar_feirante(request):
             produtos=request.POST.get('produtos'),
             volume=request.POST.get('volume'),
 
-            beneficios=request.POST.get('beneficios'),
-            contribuicao=request.POST.get('contribuicao'),
-            fortalecimento=request.POST.get('fortalecimento'),
-            produtos_mais_vendidos=request.POST.get('produtos_mais_vendidos'),
-            estrutura_apropriada=request.POST.get('estrutura_apropriada'),
+            beneficios=json.dumps(request.POST.getlist('beneficios[]')),
+            contribuicao=json.dumps(request.POST.getlist('contribuicao[]')),
+            fortalecimento=json.dumps(request.POST.getlist('fortalecimento[]')),
+            produtos_mais_vendidos=json.dumps(request.POST.getlist('produtos_aceitacao[]')),
+            estrutura_apropriada=request.POST.get('estrutura_feira'),
 
-            dificuldades=request.POST.get('dificuldades'),
+            dificuldades=json.dumps(request.POST.getlist('dificuldades[]')),
             comunicacao=request.POST.get('comunicacao'),
             apoio_institucional=request.POST.get('apoio_institucional'),
             problemas_aceitacao=request.POST.get('problemas_aceitacao'),
             sugestoes=request.POST.get('sugestoes')
         )
+
+        # Salva a imagem se vier via base64
+        if foto_base64 and foto_base64.startswith('data:image'):
+            format, imgstr = foto_base64.split(';base64,')
+            ext = format.split('/')[-1]
+            image_data = ContentFile(base64.b64decode(imgstr), name=f"{feirante.nome_feira}_foto.{ext}")
+            feirante.foto_evidencia = image_data
+
         feirante.save()
-        return redirect('dashboard')
+        return redirect('dashboard')  # ou outro destino
+
     return render(request, 'cadastros/cadastrar_feirante.html')
+
+
 ####**************************************************************************************************************************************
 
 
 def cadastrar_agricultor(request):
+    nome_entrevistador = request.user.get_full_name() or request.user.username
+    if not nome_entrevistador.strip():
+        nome_entrevistador = request.user.username
+
     if request.method == 'POST':
+        # Captura e formata os custos principais (checkboxes)
+        custos = request.POST.getlist('custos_principais[]')
+        custos_str = ", ".join(custos) if custos else "Nenhum"
+
         agricultor = Agricultor(
             local_feira=request.POST.get('local_feira'),
             data=request.POST.get('data'),
-            entrevistador=request.POST.get('entrevistador'),
+            entrevistador=nome_entrevistador,
             numero_ficha=request.POST.get('numero_ficha'),
 
             idade=request.POST.get('idade'),
@@ -185,7 +324,7 @@ def cadastrar_agricultor(request):
             produto_principal=request.POST.get('produto_principal'),
             origem_produto=request.POST.get('origem_produto'),
             faturamento=request.POST.get('faturamento'),
-            custos_principais=request.POST.get('custos_principais'),
+            custos_principais=custos_str,
             renda_varia=bool(request.POST.get('renda_varia')),
             meses_bons=request.POST.get('meses_bons'),
             meses_fracos=request.POST.get('meses_fracos'),
@@ -201,13 +340,20 @@ def cadastrar_agricultor(request):
             nome_associacao=request.POST.get('nome_associacao'),
             capacitacao=bool(request.POST.get('capacitacao')),
             capacitador=request.POST.get('capacitador'),
-            apoio_publico=request.POST.get('apoio_publico'),
+            apoio_publico=request.POST.get('apoio_publico') or '',
             acesso_credito=bool(request.POST.get('acesso_credito')),
             instituicao_credito=request.POST.get('instituicao_credito'),
         )
         agricultor.save()
         return redirect('dashboard')
-    return render(request, 'cadastros/cadastrar_agricultor.html')
+
+    # Enviar listas para o template (caso queira usá-las em loop no HTML)
+    contexto = {
+        'opcoes_acesso': ['Muito bom', 'Bom', 'Regular', 'Ruim', 'Muito ruim'],
+        'opcoes_higiene': ['Boa', 'Regular', 'Ruim'],
+    }
+    return render(request, 'cadastros/cadastrar_agricultor.html', contexto)
+
 ####**************************************************************************************************************************************
 
 def listar_artesas(request):
@@ -215,14 +361,37 @@ def listar_artesas(request):
     return render(request, 'cadastros/listar_artesas.html', {'artesas': artesas})
 ####**************************************************************************************************************************************
 
+from django.shortcuts import render
+import json
+from .models import CanalComercializacao
+
 def listar_canais(request):
-    canais = CanalComercializacao.objects.all()
+    canais = CanalComercializacao.objects.all().order_by('-data')
+
+    for canal in canais:
+        try:
+            canal.transporte_embalagem = json.loads(canal.transporte_embalagem or '[]')
+        except:
+            canal.transporte_embalagem = []
+
     return render(request, 'cadastros/listar_canais.html', {'canais': canais})
+
 ####**************************************************************************************************************************************
+
+import json
+from .models import Feirante
 
 def listar_feirantes(request):
     feirantes = Feirante.objects.all()
+
+    for f in feirantes:
+        try:
+            f.beneficios_lista = json.loads(f.beneficios or '[]')
+        except:
+            f.beneficios_lista = ['[Erro ao carregar]']
+
     return render(request, 'cadastros/listar_feirantes.html', {'feirantes': feirantes})
+
 ####**************************************************************************************************************************************
 
 def listar_agricultores(request):
@@ -320,3 +489,92 @@ def excluir_evento(request, id):
         evento.delete()
         return redirect('listar_eventos')
     return render(request, 'eventos/confirmar_exclusao.html', {'evento': evento})
+
+
+from django.contrib.auth.models import User  # ou CustomUser, se for personalizado
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+
+def listar_usuarios(request):
+    usuarios = User.objects.all()
+    return render(request, 'usuarios/listar_usuarios.html', {'usuarios': usuarios})
+
+
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+def adicionar_usuario(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        password = request.POST.get('password')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Usuário já existe.')
+        else:
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+                password=password,
+                is_active=True
+            )
+            messages.success(request, 'Usuário criado com sucesso.')
+            return redirect('listar_usuarios')
+
+    return render(request, 'usuarios/adicionar_usuario.html')
+
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from django.contrib.auth.models import User
+
+def editar_usuario(request, usuario_id):
+    usuario = get_object_or_404(User, id=usuario_id)
+    if request.method == 'POST':
+        usuario.first_name = request.POST.get('first_name')
+        usuario.last_name = request.POST.get('last_name')
+        usuario.email = request.POST.get('email')
+        usuario.is_active = bool(request.POST.get('is_active'))
+        usuario.save()
+        messages.success(request, 'Usuário atualizado com sucesso!')
+        return redirect('listar_usuarios')
+    return render(request, 'usuarios/editar_usuario.html', {'usuario': usuario})
+
+
+
+def excluir_usuario(request, user_id):
+    usuario = get_object_or_404(User, id=user_id)
+    usuario.delete()
+    messages.success(request, 'Usuário removido com sucesso!')
+    return redirect('listar_usuarios')
+
+
+import matplotlib
+matplotlib.use('Agg')  # <--- ESSA LINHA RESOLVE O ERRO
+import matplotlib.pyplot as plt
+import io
+import base64
+from collections import Counter
+
+def gerar_grafico_base64(titulo, labels, dados):
+    fig, ax = plt.subplots(figsize=(8, 4))
+    ax.bar(labels, dados, color='skyblue')
+    ax.set_title(titulo)
+    ax.set_ylabel('Quantidade')
+    ax.set_xlabel('Categorias')
+    ax.tick_params(axis='x', rotation=30)
+
+    plt.tight_layout()
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    plt.close(fig)
+    buffer.seek(0)
+    return base64.b64encode(buffer.read()).decode('utf-8')
+
+

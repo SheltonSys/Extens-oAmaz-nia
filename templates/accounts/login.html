@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 {% load static %}
 {% load widget_tweaks %}
-<html lang="en">
+<html lang="pt-br">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>EXTENSÃO Amazônia | Login</title>
 
-  <!-- Google Font: Source Sans Pro -->
+  <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome-free/css/all.min.css' %}">
-  <!-- icheck bootstrap -->
+  <!-- iCheck Bootstrap -->
   <link rel="stylesheet" href="{% static 'assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
-  <!-- Theme style -->
+  <!-- AdminLTE -->
   <link rel="stylesheet" href="{% static 'assets/dist/css/adminlte.min.css' %}">
 
   <style>
@@ -32,17 +32,6 @@
       justify-content: center;
       padding: 1rem;
     }
-    .login-box {
-      width: 100%;
-      max-width: 480px;
-      z-index: 2;
-    }
-    .card-body {
-      padding: 2rem;
-    }
-    .card-header .h1 {
-      font-size: 2rem;
-    }
     body::before {
       content: "";
       position: fixed;
@@ -51,10 +40,26 @@
       background: rgba(0, 0, 0, 0.4);
       z-index: 1;
     }
+    .login-box {
+      width: 100%;
+      max-width: 480px;
+      z-index: 2;
+    }
     .card {
       position: relative;
       z-index: 3;
       width: 100%;
+    }
+    .card-body {
+      padding: 2rem;
+    }
+    .card-header .h1 {
+      font-size: 2rem;
+    }
+    .login-logo-img {
+      max-height: 200px;
+      display: block;
+      margin: 1.5rem auto;
     }
     @media (max-width: 576px) {
       .card-body {
@@ -62,6 +67,9 @@
       }
       .card-header .h1 {
         font-size: 1.5rem;
+      }
+      .login-logo-img {
+        max-height: 140px;
       }
     }
   </style>
@@ -73,7 +81,7 @@
       <a href="#" class="h1"><b>EXTENSÃO</b> Amazônia</a>
     </div>
     <div class="card-body">
-      <p class="login-box-msg">Acesse sua conta institucional</p>
+      <img src="{% static 'assets/dist/img/logo_extenção.png' %}" alt="Logo Institucional" class="login-logo-img">
 
       <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
