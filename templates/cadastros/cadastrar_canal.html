@@ -13,6 +13,10 @@
 
 <section class="content">
   <div class="container-fluid">
+
+     <div id="status-conexao" class="alert text-center shadow" style="display: none;"></div>
+
+
     <form method="post">
       {% csrf_token %}
       <div class="card card-outline card-teal shadow">
@@ -146,10 +150,7 @@
 
 
 
-            <!-- <div class="form-group">
-              <label>🛑 Pontos de parada</label>
-              <textarea name="pontos_parada" class="form-control" placeholder="Locais estratégicos para entrega, venda ou armazenamento."></textarea>
-            </div> -->
+            
 
             <div class="form-group">
   <label><strong>🚚 Transporte e forma de embalagem</strong></label>
@@ -367,6 +368,88 @@
     }
   });
 </script>
+
+
+
+<script>
+  const formCanal = document.querySelector("form");
+  const statusDiv = document.getElementById("status-conexao");
+  const STORAGE_KEY_CANAL = "cadastros_canal_offline";
+
+  function isOffline() {
+    return !navigator.onLine;
+  }
+
+  function atualizarStatusConexao() {
+    if (navigator.onLine) {
+      statusDiv.className = "alert alert-success";
+      statusDiv.innerText = "✅ Online — envio direto para o servidor";
+    } else {
+      statusDiv.className = "alert alert-warning";
+      statusDiv.innerText = "⚠️ Offline — os dados serão salvos localmente";
+    }
+    statusDiv.style.display = "block";
+  }
+
+  function salvarCanalOffline() {
+    const formData = new FormData(formCanal);
+    const dados = {};
+    formData.forEach((value, key) => {
+      if (key.endsWith("[]")) {
+        const cleanKey = key.replace("[]", "");
+        dados[cleanKey] = dados[cleanKey] || [];
+        dados[cleanKey].push(value);
+      } else {
+        dados[key] = value;
+      }
+    });
+
+    let registros = JSON.parse(localStorage.getItem(STORAGE_KEY_CANAL)) || [];
+    registros.push(dados);
+    localStorage.setItem(STORAGE_KEY_CANAL, JSON.stringify(registros));
+
+    alert("✅ Cadastro salvo localmente! Será sincronizado quando a internet voltar.");
+  }
+
+  function sincronizarCanais() {
+    const registros = JSON.parse(localStorage.getItem(STORAGE_KEY_CANAL)) || [];
+    if (registros.length === 0) return;
+
+    registros.forEach(dados => {
+      fetch("/sincronizar/canal/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+        body: JSON.stringify(dados)
+      }).then(response => {
+        if (response.ok) {
+          console.log("✅ Canal sincronizado.");
+        }
+      });
+    });
+
+    localStorage.removeItem(STORAGE_KEY_CANAL);
+  }
+
+  // Eventos de controle
+  formCanal.addEventListener("submit", function (e) {
+    if (isOffline()) {
+      e.preventDefault();
+      salvarCanalOffline();
+    }
+  });
+
+  window.addEventListener("load", atualizarStatusConexao);
+  window.addEventListener("online", () => {
+    atualizarStatusConexao();
+    sincronizarCanais();
+  });
+  window.addEventListener("offline", atualizarStatusConexao);
+</script>
+
+
 
 
 {% endblock %}

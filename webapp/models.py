@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User  # ou seu modelo customizado
+from django.conf import settings  # para usar o AUTH_USER_MODEL
 
 # 1. Artesãs
 class Artesa(models.Model):
@@ -30,6 +32,19 @@ class Artesa(models.Model):
 
     data_cadastro = models.DateTimeField(auto_now_add=True)
 
+    # NOVO CAMPO
+    from django.conf import settings  # para usar o AUTH_USER_MODEL
+
+    # ... outros campos ...
+    responsavel = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='cadastros_artesa'
+    )
+
+
     def __str__(self):
         return self.nome
 
@@ -39,7 +54,7 @@ class Artesa(models.Model):
 from django.db import models
 
 class CanalComercializacao(models.Model):
-    responsavel = models.CharField(max_length=100)
+    responsavel = models.CharField(max_length=255, null=True, blank=True)
     data = models.DateField()
     comunidade = models.CharField(max_length=100)
     nome_entrevistado = models.CharField(max_length=100)
@@ -51,8 +66,9 @@ class CanalComercializacao(models.Model):
     transporte_embalagem = models.TextField(null=True, blank=True)       # Lista de transportes/embalagens (JSON)
     produtores_inseridos = models.TextField(null=True, blank=True)       # Lista de produtores (JSON)
 
-    # Campos simples adicionais
     pontos_parada = models.TextField(null=True, blank=True)
+
+
 
     data_cadastro = models.DateTimeField(auto_now_add=True)
 
@@ -87,6 +103,15 @@ class Feirante(models.Model):
     foto_evidencia = models.ImageField(upload_to='feirantes/fotos/', null=True, blank=True)
 
     data_cadastro = models.DateTimeField(auto_now_add=True)
+
+    responsavel = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='cadastros_feirante'
+    )
+
 
     def __str__(self):
         return self.nome_feira
@@ -140,15 +165,22 @@ class Agricultor(models.Model):
     instituicao_credito = models.CharField(max_length=100, blank=True)
 
     data_cadastro = models.DateTimeField(auto_now_add=True)
+
+    responsavel = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 ######################***********************************************************************************************************
+
+from django.contrib.auth.models import User
+from django.db import models
 
 class Evento(models.Model):
     data = models.DateField()
     titulo = models.CharField(max_length=255)
     local = models.CharField(max_length=255)
     descricao = models.TextField(blank=True)
-
+    
+    responsavel = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)  # ⬅ Campo adicionado
 
     def __str__(self):
-        return f"{self.data} - {self.evento}"
+        return f"{self.data} - {self.titulo}"
+
 ######################***********************************************************************************************************

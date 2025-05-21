@@ -4,6 +4,40 @@
 {% block title %}Listagem de Agricultores | EXTENSÃO{% endblock %}
 
 {% block content %}
+
+<style>
+  @media (min-width: 992px) {
+    .col-lg-2-4 {
+      flex: 0 0 auto;
+      width: 20%;
+    }
+  }
+
+  .card-agricultor {
+    border: none;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .card-agricultor:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .agricultor-img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+  }
+
+  .truncate-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+  }
+</style>
+
 <section class="content-header">
   <div class="container-fluid">
     <h1><i class="fas fa-tractor text-success"></i> Agricultores</h1>
@@ -14,35 +48,51 @@
 <section class="content">
   <div class="container-fluid">
 
-    <!-- Cards Resumo (com dados do agricultor) -->
+    <!-- Cards -->
     <div class="row">
-      {% for ag in agricultores|slice:":3" %}
-      <div class="col-md-4">
-        <div class="card border-success shadow-sm mb-4">
-          <div class="card-header bg-success text-white">
-            <strong><i class="fas fa-seedling"></i> {{ ag.produto_principal }}</strong>
+      {% for ag in agricultores %}
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2-4 mb-4">
+        <div class="card card-agricultor shadow-sm h-100 border-success">
+          <div class="bg-success text-white text-center p-2 rounded-top">
+            <h6 class="fw-bold mb-0 truncate-text" title="{{ ag.produto_principal }}">
+              {{ ag.produto_principal }}
+            </h6>
+            <small>{{ ag.local_feira }}</small>
           </div>
-          <div class="card-body">
-            <p><strong>🎂 Idade:</strong> {{ ag.idade }} anos</p>
-            <p><strong>⚧ Sexo:</strong> {{ ag.sexo }}</p>
-            <p><strong>🏘 Cidade:</strong> {{ ag.cidade_origem }}</p>
-            <p><strong>🏦 Crédito:</strong> 
+          <div class="text-center mt-2">
+            <img src="{% if ag.foto_evidencia %}{{ ag.foto_evidencia.url }}{% else %}{% static 'assets/dist/img/logo_extenção.png' %}{% endif %}"
+                 class="rounded-circle border agricultor-img shadow-sm" alt="Foto">
+          </div>
+          <div class="card-body text-center py-2">
+            <small class="d-block"><strong>Idade:</strong> {{ ag.idade }}</small>
+            <small class="d-block"><strong>Sexo:</strong> {{ ag.sexo }}</small>
+            <small class="d-block truncate-text" title="{{ ag.cidade_origem }}"><strong>Cidade:</strong> {{ ag.cidade_origem }}</small>
+          </div>
+          <div class="card-footer text-center py-1 bg-light">
+            <small>
+              Crédito:
               {% if ag.acesso_credito %}
-                <span class="badge badge-success">Sim</span>
+                <span class="badge bg-success">Sim</span>
               {% else %}
-                <span class="badge badge-secondary">Não</span>
+                <span class="badge bg-secondary">Não</span>
               {% endif %}
-            </p>
+            </small>
           </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info text-center">
+          Nenhum agricultor cadastrado até o momento.
         </div>
       </div>
       {% endfor %}
     </div>
 
-    <!-- Tabela Completa -->
-    <div class="card card-outline card-success">
+    <!-- Tabela -->
+    <div class="card card-outline card-success mt-4">
       <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-list"></i> Lista de Agricultores</h3>
+        <h3 class="card-title"><i class="fas fa-table"></i> Lista de Agricultores</h3>
       </div>
       <div class="card-body table-responsive p-0">
         <table class="table table-hover table-striped">
@@ -66,15 +116,11 @@
               <td>{{ ag.produto_principal }}</td>
               <td>
                 {% if ag.acesso_credito %}
-                  <span class="badge badge-success">Sim</span>
+                  <span class="badge bg-success">Sim</span>
                 {% else %}
-                  <span class="badge badge-secondary">Não</span>
+                  <span class="badge bg-secondary">Não</span>
                 {% endif %}
               </td>
-            </tr>
-            {% empty %}
-            <tr>
-              <td colspan="6" class="text-center text-muted">Nenhum agricultor cadastrado.</td>
             </tr>
             {% endfor %}
           </tbody>

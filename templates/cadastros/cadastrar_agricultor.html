@@ -13,6 +13,10 @@
 
 <section class="content">
   <div class="container-fluid">
+
+     <div id="status-conexao" class="alert text-center shadow" style="display: none;"></div>
+
+
     <form method="post">
       {% csrf_token %}
       <div class="card card-outline card-success shadow">
@@ -453,24 +457,96 @@
 </div>
 
 <script>
-  // Exibe a mensagem se houver flag no localStorage
+  const form = document.querySelector("form");
+  const STORAGE_KEY = "cadastros_agricultor_offline";
+
+  // Exibe alerta de sucesso se marcado
   if (localStorage.getItem('cadastro_agricultor_sucesso')) {
     localStorage.removeItem('cadastro_agricultor_sucesso');
     const msg = document.getElementById('mensagem-sucesso');
     msg.style.display = 'block';
     setTimeout(() => {
       msg.style.display = 'none';
-    }, 4000); // esconde após 4 segundos
+    }, 4000);
   }
 
-  // Marca o sucesso antes de enviar o formulário
-  const form = document.querySelector('form');
+  // Marcar envio bem-sucedido
   if (form) {
-    form.addEventListener('submit', () => {
-      localStorage.setItem('cadastro_agricultor_sucesso', '1');
+    form.addEventListener('submit', function (e) {
+      if (!navigator.onLine) {
+        e.preventDefault();
+        salvarOffline();
+      } else {
+        localStorage.setItem('cadastro_agricultor_sucesso', '1');
+      }
     });
   }
+
+  function salvarOffline() {
+    const formData = new FormData(form);
+    const dados = {};
+
+    formData.forEach((value, key) => {
+      if (key.endsWith("[]")) {
+        const cleanKey = key.replace("[]", "");
+        dados[cleanKey] = dados[cleanKey] || [];
+        dados[cleanKey].push(value);
+      } else {
+        dados[key] = value;
+      }
+    });
+
+    let registros = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    registros.push(dados);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
+
+    alert("✅ Cadastro salvo localmente! Será sincronizado quando a internet voltar.");
+  }
+
+  function sincronizarCadastros() {
+    const registros = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    if (registros.length === 0) return;
+
+    registros.forEach(dados => {
+      fetch("/sincronizar/agricultor/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+        body: JSON.stringify(dados)
+      }).then(response => {
+        if (response.ok) {
+          console.log("✅ Cadastro sincronizado.");
+        }
+      });
+    });
+
+    localStorage.removeItem(STORAGE_KEY);
+  }
+
+  // Status de conexão
+  const statusDiv = document.getElementById("status-conexao");
+  function atualizarStatusConexao() {
+    if (navigator.onLine) {
+      statusDiv.className = "alert alert-success";
+      statusDiv.innerText = "✅ Online — envio direto para o servidor";
+    } else {
+      statusDiv.className = "alert alert-warning";
+      statusDiv.innerText = "⚠️ Offline — os dados serão salvos localmente";
+    }
+    statusDiv.style.display = "block";
+  }
+
+  window.addEventListener("load", () => {
+    atualizarStatusConexao();
+    sincronizarCadastros();  // Tenta sincronizar assim que voltar à rede
+  });
+
+  window.addEventListener("online", atualizarStatusConexao);
+  window.addEventListener("offline", atualizarStatusConexao);
 </script>
+
 
 
 

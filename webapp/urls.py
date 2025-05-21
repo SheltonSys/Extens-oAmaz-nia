@@ -15,6 +15,8 @@ from .views import relatorio_pdf
 from django.conf import settings
 from django.conf.urls.static import static
 
+from .views import sincronizar_artesa, sincronizar_feirante, sincronizar_agricultor
+
 
 urlpatterns = [
     path('', views.BASE, name='BASE'),
@@ -46,6 +48,19 @@ urlpatterns = [
     path('usuarios/novo/', views.adicionar_usuario, name='adicionar_usuario'),
     path('usuarios/editar/<int:usuario_id>/', views.editar_usuario, name='editar_usuario'),
     path('usuarios/excluir/<int:usuario_id>/', views.excluir_usuario, name='excluir_usuario'),
+
+    path('sincronizar/artesa/', sincronizar_artesa, name='sincronizar_artesa'),
+    path("sincronizar/feirante/", sincronizar_feirante, name="sincronizar_feirante"),
+    path("sincronizar/agricultor/", sincronizar_agricultor, name="sincronizar_agricultor"),
+    path('sincronizar/canal/', views.sincronizar_canal, name='sincronizar_canal'),
+
+    path('relatorios/dinamico/', views.relatorio_dinamico, name='relatorio_dinamico'),
+
+    path('cadastro/artesa/', views.cadastrar_artesa, name='cadastrar_artesa'),
+
+
+
+
 ]
 
 

@@ -149,6 +149,7 @@
         </li>
 
 
+        {% if request.user.is_superuser or request.user.is_staff %}
         <li class="nav-item has-treeview">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-calendar-alt text-warning"></i>
@@ -172,30 +173,39 @@
             </li>
           </ul>
         </li>
+        
 
         <li class="nav-item has-treeview">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-file-alt text-info"></i>
-            <p>
-              Relatórios
-              <i class="right fas fa-angle-left"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="{% url 'relatorio_geral' %}" class="nav-link">
-                <i class="far fa-circle nav-icon text-secondary"></i>
-                <p>Relatório Geral</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="{% url 'relatorio_pdf' %}" class="nav-link">
-                <i class="far fa-file-pdf nav-icon text-danger"></i>
-                <p>Gerar PDF</p>
-              </a>
-            </li>
-          </ul>
-        </li>
+  <a href="#" class="nav-link">
+    <i class="nav-icon fas fa-file-alt text-info"></i>
+    <p>
+      Relatórios
+      <i class="right fas fa-angle-left"></i>
+    </p>
+  </a>
+  <ul class="nav nav-treeview">
+    <li class="nav-item">
+      <a href="{% url 'relatorio_geral' %}" class="nav-link">
+        <i class="far fa-circle nav-icon text-secondary"></i>
+        <p>Relatório Geral</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'relatorio_pdf' %}" class="nav-link">
+        <i class="far fa-file-pdf nav-icon text-danger"></i>
+        <p>Gerar PDF</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'relatorio_dinamico' %}" class="nav-link">
+        <i class="fas fa-filter nav-icon text-teal"></i>
+        <p>Relatórios Dinâmicos</p>
+      </a>
+    </li>
+  </ul>
+</li>
+
+
 
 
 <li class="nav-item has-treeview">
@@ -221,7 +231,7 @@
     </li>
   </ul>
 </li>
-
+{% endif %}
 
 
 

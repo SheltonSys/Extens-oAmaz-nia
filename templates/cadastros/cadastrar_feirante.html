@@ -11,14 +11,38 @@
   </div>
 </section>
 
+
+
 <section class="content">
+  
+
   <div class="container-fluid">
+
+    <div id="status-conexao" class="alert text-center shadow" style="display: none;"></div>
+
+
+<!-- ALERTA DE ERRO DE CÂMERA -->
+<div id="alerta-camera" class="alert alert-danger alert-dismissible fade show shadow text-center" role="alert" style="display:none; max-width: 600px; margin: 20px auto;">
+  <strong>Erro:</strong> <div id="mensagem-erro-camera" class="mt-2"></div>
+  <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Fechar"></button>
+</div>
+
+
+
+
     <form method="post">
       {% csrf_token %}
       <div class="card card-outline card-warning shadow">
         <div class="card-header">
           <h3 class="card-title"><i class="fas fa-store-alt"></i> Informações da Feira</h3>
         </div>
+
+        <div class="form-group col-md-12">
+  <label>👤 Responsável pelo levantamento</label>
+  <input type="text" name="responsavel" class="form-control" 
+         value="{{ request.user.get_full_name|default:request.user.username }}" readonly>
+</div>
+
         <div class="card-body">
 
           <fieldset class="border p-3 mb-4">
@@ -306,15 +330,24 @@
 
 
           <fieldset class="border p-3 mb-4">
-  <legend class="w-auto text-info"><i class="fas fa-camera"></i> Foto de Evidência</legend>
+  <legend class="w-auto text-primary"><i class="fas fa-camera"></i> Foto de Evidência</legend>
 
   <div class="form-group text-center">
     <video id="video" width="100%" height="240" autoplay class="border rounded mb-2"></video>
     <canvas id="canvas" style="display:none;"></canvas>
     <input type="hidden" name="foto_base64" id="foto_base64">
-    <button type="button" class="btn btn-outline-info" onclick="capturarFoto()">
-      <i class="fas fa-camera"></i> Tirar Foto
-    </button>
+    
+    <div class="btn-group mt-2" role="group">
+      <button type="button" class="btn btn-outline-primary" onclick="capturarFoto()">
+        <i class="fas fa-camera"></i> Tirar Foto
+      </button>
+      <button type="button" class="btn btn-outline-danger" onclick="desligarCamera()">
+        <i class="fas fa-power-off"></i> Desligar Câmera
+      </button>
+      <button type="button" class="btn btn-outline-secondary" onclick="alternarCamera()">
+        <i class="fas fa-sync-alt"></i> Alternar Câmera
+      </button>
+    </div>
   </div>
 
   <div id="preview" class="text-center mt-3" style="display:none;">
@@ -336,7 +369,15 @@
       </div>
     </form>
   </div>
+
+
+
+
 </section>
+
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 
 
 
@@ -354,33 +395,164 @@
 
 
 <script>
-  navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => {
+  let stream = null;
+  let usandoFrontal = true;
+
+  async function iniciarCamera() {
+    try {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+
+      const constraints = {
+        video: {
+          facingMode: usandoFrontal ? "user" : "environment"
+        },
+        audio: false
+      };
+
+      stream = await navigator.mediaDevices.getUserMedia(constraints);
       document.getElementById('video').srcObject = stream;
-    })
-    .catch(error => {
-      console.error("Erro ao acessar câmera:", error);
-      alert("Não foi possível acessar a câmera.");
-    });
+
+    } catch (err) {
+      exibirErroCamera("Não foi possível acessar a câmera. O seu navegador pode não suportar este recurso ou o acesso foi bloqueado. Verifique se está usando um navegador compatível e se a conexão é segura (HTTPS).");
+
+    }
+  }
+
+  function desligarCamera() {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      stream = null;
+      document.getElementById('video').srcObject = null;
+    }
+  }
+
+  function alternarCamera() {
+    usandoFrontal = !usandoFrontal;
+    iniciarCamera();
+  }
 
   function capturarFoto() {
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
+    const fotoBase64 = document.getElementById('foto_base64');
     const preview = document.getElementById('preview');
-    const fotoInput = document.getElementById('foto_base64');
+    const fotoPreview = document.getElementById('foto_preview');
 
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    const base64 = canvas.toDataURL('image/jpeg');
-    fotoInput.value = base64;
-
-    document.getElementById('foto_preview').src = base64;
-    preview.style.display = 'block';
+    const imagemBase64 = canvas.toDataURL('image/png');
+    fotoBase64.value = imagemBase64;
+    fotoPreview.src = imagemBase64;
+    preview.style.display = "block";
   }
+
+  // Iniciar a câmera automaticamente ao carregar a página
+  document.addEventListener('DOMContentLoaded', iniciarCamera);
+</script>
+
+
+<script>
+  const statusDiv = document.getElementById("status-conexao");
+
+  function atualizarStatusConexao() {
+    if (navigator.onLine) {
+      statusDiv.className = "alert alert-success text-center shadow";
+      statusDiv.innerHTML = "✅ Conectado — cadastros serão enviados normalmente.";
+    } else {
+      statusDiv.className = "alert alert-warning text-center shadow";
+      statusDiv.innerHTML = "⚠️ Você está offline — os dados serão salvos localmente.";
+    }
+    statusDiv.style.display = "block";
+  }
+
+  window.addEventListener("load", atualizarStatusConexao);
+  window.addEventListener("online", atualizarStatusConexao);
+  window.addEventListener("offline", atualizarStatusConexao);
+</script>
+
+
+
+
+<script>
+  const form = document.querySelector("form");
+  const STORAGE_KEY = "cadastros_feirante_offline";
+
+  function isOffline() {
+    return !navigator.onLine;
+  }
+
+  function salvarOffline() {
+    const formData = new FormData(form);
+    const dados = {};
+    formData.forEach((value, key) => {
+      if (key.endsWith("[]")) {
+        const cleanKey = key.replace("[]", "");
+        dados[cleanKey] = dados[cleanKey] || [];
+        dados[cleanKey].push(value);
+      } else {
+        dados[key] = value;
+      }
+    });
+
+    let registros = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    registros.push(dados);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
+
+    alert("✅ Cadastro salvo localmente! Será sincronizado quando a internet voltar.");
+  }
+
+  function sincronizarCadastros() {
+    const registros = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    if (registros.length === 0) return;
+
+    registros.forEach(dados => {
+      fetch("/sincronizar/feirante/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+        body: JSON.stringify(dados)
+      }).then(response => {
+        if (response.ok) {
+          console.log("✅ Sincronizado com sucesso");
+        }
+      });
+    });
+
+    localStorage.removeItem(STORAGE_KEY);
+  }
+
+  form.addEventListener("submit", function (e) {
+    if (isOffline()) {
+      e.preventDefault();
+      salvarOffline();
+    }
+  });
+
+  window.addEventListener("online", sincronizarCadastros);
+</script>
+
+
+
+<script>
+function exibirErroCamera(mensagem) {
+  const alerta = document.getElementById("alerta-camera");
+  const spanMensagem = document.getElementById("mensagem-erro-camera");
+
+  spanMensagem.textContent = mensagem;
+  alerta.style.display = "block";
+
+  // Oculta após 6 segundos
+  setTimeout(() => {
+    alerta.style.display = "none";
+  }, 6000);
+}
+
 </script>
 
 

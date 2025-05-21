@@ -89,21 +89,19 @@
           <div class="alert alert-danger">{{ form.non_field_errors }}</div>
         {% endif %}
 
-        <div class="input-group mb-3">
-          {% render_field form.username class="form-control" placeholder="Email" %}
+         <div class="input-group mb-3">
+          {% render_field form.username class="form-control" placeholder="Digite seu Usuário" %}
           <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
-            </div>
+            <div class="input-group-text"><span class="fas fa-user"></span></div>
           </div>
         </div>
 
         <div class="input-group mb-3">
-          {% render_field form.password class="form-control" placeholder="Senha" %}
+          <input type="password" name="password" class="form-control" placeholder="Senha" id="campoSenhaLogin" required>
           <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
-            </div>
+            <button class="btn btn-outline-secondary" type="button" onclick="toggleSenhaLogin()" title="Ver senha">
+              <i id="iconeSenhaLogin" class="fas fa-eye"></i>
+            </button>
           </div>
         </div>
 
@@ -134,5 +132,23 @@
 <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'assets/dist/js/adminlte.min.js' %}"></script>
+
+
+
+<script>
+  function toggleSenhaLogin() {
+    const campo = document.getElementById("campoSenhaLogin");
+    const icone = document.getElementById("iconeSenhaLogin");
+    if (campo.type === "password") {
+      campo.type = "text";
+      icone.classList.remove("fa-eye");
+      icone.classList.add("fa-eye-slash");
+    } else {
+      campo.type = "password";
+      icone.classList.remove("fa-eye-slash");
+      icone.classList.add("fa-eye");
+    }
+  }
+</script>
 </body>
 </html>

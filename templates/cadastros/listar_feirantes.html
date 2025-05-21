@@ -4,6 +4,40 @@
 {% block title %}Listagem de Feirantes | EXTENSÃO Amazônia{% endblock %}
 
 {% block content %}
+
+<style>
+  @media (min-width: 992px) {
+    .col-lg-2-4 {
+      flex: 0 0 auto;
+      width: 20%;
+    }
+  }
+
+  .card-feirante {
+    border: none;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .card-feirante:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .feirante-img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+  }
+
+  .truncate-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+  }
+</style>
+
 <section class="content-header">
   <div class="container-fluid">
     <h1><i class="fas fa-people-carry text-warning"></i> Feirantes</h1>
@@ -15,27 +49,22 @@
   <div class="container-fluid">
     <div class="row">
       {% for feirante in feirantes %}
-      <div class="col-md-6 col-lg-4">
-        <div class="card card-outline card-warning shadow">
-          <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-store-alt"></i> {{ feirante.nome_feira }}</h3>
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2-4 mb-4">
+        <div class="card shadow-sm card-feirante h-100">
+          <div class="bg-warning text-white text-center p-2 rounded-top">
+            <h6 class="fw-bold mb-0">Feira: {{ feirante.nome_feira }}</h6>
+            <small>{{ feirante.local }}</small>
           </div>
-
-          <div class="card-body text-center">
-  {% if feirante.foto_evidencia %}
-    <img src="{{ feirante.foto_evidencia.url }}" class="img-thumbnail mb-3" style="max-height: 110px;" alt="Foto do Feirante">
-  {% else %}
-    <img src="{% static 'assets/dist/img/avatar.png' %}" class="img-thumbnail mb-3" style="max-height: 110px;" alt="Avatar padrão">
-  {% endif %}
-
-  <p><strong>Local:</strong> {{ feirante.local }}</p>
-  <p><strong>Periodicidade:</strong> {{ feirante.periodicidade }}</p>
-  <p><strong>Produtos:</strong> {{ feirante.produtos }}</p>
-</div>
-
-
-          <div class="card-footer text-right">
-            <small>Volume: {{ feirante.volume }}</small>
+          <div class="text-center mt-2">
+            <img src="{% if feirante.foto_evidencia %}{{ feirante.foto_evidencia.url }}{% else %}{% static 'assets/dist/img/logo_extenção.png' %}{% endif %}"
+                 class="rounded-circle border feirante-img shadow-sm" alt="Foto">
+          </div>
+          <div class="card-body text-center py-2">
+            <small class="d-block"><strong>Periodicidade:</strong> {{ feirante.periodicidade }}</small>
+            <small class="d-block truncate-text" title="{{ feirante.produtos }}"><strong>Produtos:</strong> {{ feirante.produtos }}</small>
+          </div>
+          <div class="card-footer text-center py-1 bg-light">
+            <small class="text-muted"><i class="fas fa-box"></i> Volume: {{ feirante.volume }}</small>
           </div>
         </div>
       </div>
@@ -48,7 +77,7 @@
       {% endfor %}
     </div>
 
-    <div class="card card-outline card-secondary">
+    <div class="card card-outline card-secondary mt-4">
       <div class="card-header">
         <h3 class="card-title"><i class="fas fa-table"></i> Tabela Geral</h3>
       </div>
@@ -71,25 +100,22 @@
               <td>{{ f.periodicidade }}</td>
               <td>{{ f.produtos }}</td>
               <td>
-  {% if f.beneficios_lista %}
-    <ul class="mb-0 pl-3">
-      {% for b in f.beneficios_lista %}
-        <li>{{ b }}</li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <span class="text-muted">–</span>
-  {% endif %}
-</td>
-
+                {% if f.beneficios_lista %}
+                  <ul class="mb-0 ps-3">
+                    {% for b in f.beneficios_lista %}
+                      <li>{{ b }}</li>
+                    {% endfor %}
+                  </ul>
+                {% else %}
+                  <span class="text-muted">–</span>
+                {% endif %}
+              </td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
     </div>
-
-
 
   </div>
 </section>

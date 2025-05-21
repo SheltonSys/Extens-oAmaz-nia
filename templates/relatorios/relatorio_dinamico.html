@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% block title %}Relatórios Dinâmicos | EXTENSÃO{% endblock %}
+
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <h1><i class="fas fa-filter text-info"></i> Relatórios Dinâmicos</h1>
+    <p class="text-muted">Use os filtros abaixo para gerar relatórios cruzados de dados dos cadastros.</p>
+  </div>
+</section>
+
+<section class="content">
+  <div class="container-fluid">
+    <!-- Filtros -->
+    <form method="get" class="card card-outline card-info shadow-sm mb-4 p-3">
+      <div class="row">
+
+        <div class="form-group col-md-3">
+          <label for="responsavel">👤 Responsável</label>
+          <select class="form-control" name="responsavel">
+            <option value="">-- Todos --</option>
+            {% for u in usuarios %}
+              <option value="{{ u.id }}" {% if request.GET.responsavel == u.id|stringformat:"s" %}selected{% endif %}>{{ u.get_full_name|default:u.username }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+
+        <div class="form-group col-md-4">
+          <label for="comunidade">🔍 Comunidade ou Local</label>
+          <select class="form-control" name="comunidade">
+            <option value="">-- Todas --</option>
+            {% for c in comunidades %}
+              <option value="{{ c }}" {% if request.GET.comunidade == c %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+
+        <div class="form-group col-md-1">
+          <label>📅 De</label>
+          <input type="date" class="form-control" name="data_inicio" value="{{ request.GET.data_inicio }}">
+        </div>
+        <div class="form-group col-md-1">
+          <label>📅 Até</label>
+          <input type="date" class="form-control" name="data_fim" value="{{ request.GET.data_fim }}">
+        </div>
+
+
+        <div class="form-group col-md-3">
+          <label for="tipo">📦 Tipo / Produto / Evento</label>
+          <select class="form-control" name="tipo">
+            <option value="">-- Todos --</option>
+            {% for t in tipos %}
+              <option value="{{ t }}" {% if request.GET.tipo == t %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+
+      </div>
+      <div class="text-right">
+        <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Aplicar Filtros</button>
+
+
+      </div>
+      
+    </form>
+
+    <!-- Canais de Comercialização -->
+    <div class="card card-outline card-primary shadow-sm mb-4">
+      <div class="card-header"><h3 class="card-title"><i class="fas fa-store"></i> Canais de Comercialização</h3></div>
+      <div class="card-body table-responsive p-0">
+        <table class="table table-sm table-bordered table-striped">
+          <thead><tr><th>Data</th><th>Comunidade</th><th>Entrevistado</th><th>Rota</th></tr></thead>
+          <tbody>
+            {% for c in canais %}<tr><td>{{ c.data|date:"d/m/Y" }}</td><td>{{ c.comunidade }}</td><td>{{ c.nome_entrevistado }}</td><td>{{ c.rota_nome }}</td></tr>{% empty %}
+            <tr><td colspan="4" class="text-muted text-center">Nenhum dado encontrado.</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Agricultores -->
+    <div class="card card-outline card-success shadow-sm mb-4">
+      <div class="card-header"><h3 class="card-title"><i class="fas fa-tractor"></i> Agricultores</h3></div>
+      <div class="card-body table-responsive p-0">
+        <table class="table table-sm table-bordered table-striped">
+          <thead><tr><th>Nome</th><th>Idade</th><th>Produto Principal</th><th>Crédito</th></tr></thead>
+          <tbody>
+            {% for a in agricultores %}<tr><td>{{ a.nome }}</td><td>{{ a.idade }}</td><td>{{ a.produto_principal }}</td>
+              <td>{% if a.acesso_credito %}<span class="badge badge-success">Sim</span>{% else %}<span class="badge badge-secondary">Não</span>{% endif %}</td>
+            </tr>{% empty %}
+            <tr><td colspan="4" class="text-muted text-center">Nenhum dado encontrado.</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Feirantes -->
+    <div class="card card-outline card-warning shadow-sm mb-4">
+      <div class="card-header"><h3 class="card-title"><i class="fas fa-people-carry"></i> Feirantes</h3></div>
+      <div class="card-body table-responsive p-0">
+        <table class="table table-sm table-bordered table-striped">
+          <thead><tr><th>Nome da Feira</th><th>Local</th><th>Periodicidade</th><th>Produtos</th></tr></thead>
+          <tbody>
+            {% for f in feirantes %}<tr><td>{{ f.nome_feira }}</td><td>{{ f.local }}</td><td>{{ f.periodicidade }}</td><td>{{ f.produtos }}</td></tr>{% empty %}
+            <tr><td colspan="4" class="text-muted text-center">Nenhum dado encontrado.</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Artesãs -->
+    <div class="card card-outline card-purple shadow-sm mb-4">
+      <div class="card-header"><h3 class="card-title"><i class="fas fa-female"></i> Artesãs</h3></div>
+      <div class="card-body table-responsive p-0">
+        <table class="table table-sm table-bordered table-striped">
+          <thead><tr><th>Nome</th><th>Idade</th><th>Renda</th><th>Produções</th></tr></thead>
+          <tbody>
+            {% for ar in artesas %}<tr><td>{{ ar.nome }}</td><td>{{ ar.idade }}</td><td>{{ ar.renda_artesanato }}</td><td>
+  {% for item in ar.producoes_lista %}
+    <span class="badge badge-light border">{{ item }}</span>
+  {% empty %}
+    <span class="text-muted">–</span>
+  {% endfor %}
+</td>
+</tr>{% empty %}
+            <tr><td colspan="4" class="text-muted text-center">Nenhum dado encontrado.</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Eventos -->
+    <div class="card card-outline card-dark shadow-sm mb-4">
+      <div class="card-header"><h3 class="card-title"><i class="fas fa-calendar-alt"></i> Eventos</h3></div>
+      <div class="card-body table-responsive p-0">
+        <table class="table table-sm table-bordered table-striped">
+          <thead><tr><th>Data</th><th>Evento</th><th>Local</th><th>Descrição</th></tr></thead>
+          <tbody>
+            {% for ev in eventos %}<tr><td>{{ ev.data|date:"d/m/Y" }}</td><td>{{ ev.titulo }}</td><td>{{ ev.local }}</td><td>{{ ev.descricao|truncatechars:60 }}</td></tr>{% empty %}
+            <tr><td colspan="4" class="text-muted text-center">Nenhum evento registrado.</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<style>
+  .form-group select {
+    min-height: 38px;
+  }
+</style>
+
+{% endblock %}
