@@ -906,7 +906,7 @@ def relatorio_dinamico(request):
 
     # Filtro por responsável
     if responsavel_id:
-        canais = canais.filter(responsavel_id=responsavel_id)
+        canais = canais.filter(responsavel=responsavel_id)
         agricultores = agricultores.filter(responsavel_id=responsavel_id)
         feirantes = feirantes.filter(responsavel_id=responsavel_id)
         artesas = artesas.filter(responsavel_id=responsavel_id)
