@@ -16,6 +16,7 @@ ALLOWED_HOSTS = [
     '44.220.132.45',
     '10.19.35.23',
     '98.84.179.107',
+    '18.233.153.249',
     'agenciaextensaoamazonia.com',
     'www.agenciaextensaoamazonia.com',
 ]
