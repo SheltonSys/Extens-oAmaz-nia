@@ -124,7 +124,7 @@
         </li>
 
 
-        <li class="nav-item has-treeview menu-close">
+        <!-- <li class="nav-item has-treeview menu-close">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-tractor"></i>
             <p>
@@ -146,7 +146,33 @@
               </a>
             </li>
           </ul>
-        </li>
+        </li> -->
+
+
+        <li class="nav-item has-treeview menu-close">
+  <a href="#" class="nav-link">
+    <i class="nav-icon fas fa-users text-info"></i>
+    <p>
+      Perfil Socioeconômico
+      <i class="right fas fa-angle-left"></i>
+    </p>
+  </a>
+  <ul class="nav nav-treeview">
+    <li class="nav-item">
+      <a href="{% url 'cadastrar_perfil' %}" class="nav-link">
+        <i class="fas fa-user-edit nav-icon text-success"></i>
+        <p>Preencher Questionário</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'listar_agricultores_novo' %}" class="nav-link">
+        <i class="fas fa-list nav-icon text-primary"></i>
+        <p>Ver Registros</p>
+      </a>
+    </li>
+  </ul>
+</li>
+
 
 
         {% if request.user.is_superuser or request.user.is_staff %}

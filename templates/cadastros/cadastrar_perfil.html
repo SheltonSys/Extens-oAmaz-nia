@@ -1,0 +1,546 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cadastro Socioeconômico | EXTENSÃO Amazônia{% endblock %}
+
+{% block content %}
+<section class="content-header">
+    <div class="container-fluid">
+        <h1><i class="fas fa-users text-primary"></i> Questionário Socioeconômico</h1>
+        <p class="text-muted">Formulário técnico de levantamento socioeconômico de famílias tradicionais vinculadas ao
+            projeto.</p>
+    </div>
+</section>
+
+<!-- Elemento HTML da mensagem -->
+<div id="status-conexao" class="alert" style="display: none;"></div>
+
+
+<section class="content">
+    <div class="container-fluid">
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Card: Entrevistador -->
+            <div class="card card-outline card-info shadow mb-4">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-user-check"></i> Identificação do Entrevistador</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group mb-0">
+                        <label>👤 Nome do Entrevistador</label>
+                        <input type="text" name="entrevistador" class="form-control"
+                            value="{{ request.user.get_full_name|default:request.user.username }}" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Perfil Familiar -->
+            <div class="card card-outline card-primary shadow mb-4">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-clipboard-list"></i> Perfil Familiar</h3>
+                </div>
+                <div class="card-body">
+
+                    <!-- Seção I: Identificação Familiar -->
+                    <fieldset class="border p-3 mb-4">
+                        <legend class="w-auto text-primary"><i class="fas fa-home"></i> Identificação Familiar</legend>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>📍 Comunidade/Localidade</label>
+                                <input type="text" name="comunidade" class="form-control">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>👨‍👩‍👧 Nome do Responsável</label>
+                                <input type="text" name="nome_responsavel" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>👪 Nº de Pessoas na Casa</label>
+                                <input type="number" name="qtd_moradores" class="form-control">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>⏱️ Tempo na Comunidade</label>
+                                <input type="text" name="tempo_comunidade" class="form-control">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>🧭 Zona</label>
+                                <input type="text" name="zona" class="form-control" placeholder="Rural ou Urbana">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label>🧒 Crianças (0-12)</label>
+                                <input type="number" name="composicao_criancas" class="form-control">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>👦 Adolescentes (13-17)</label>
+                                <input type="number" name="composicao_adolescentes" class="form-control">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>🧑 Adultos (18-59)</label>
+                                <input type="number" name="composicao_adultos" class="form-control">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>👴 Idosos (60+)</label>
+                                <input type="number" name="composicao_idosos" class="form-control">
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Seção II: Moradia -->
+                    <fieldset class="border p-3 mb-4">
+                        <legend class="w-auto text-secondary"><i class="fas fa-house-user"></i> Moradia</legend>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Tipo de Moradia</label>
+                                <select name="tipo_moradia" class="form-control">
+                                    <option>Própria</option>
+                                    <option>Alugada</option>
+                                    <option>Cedida</option>
+                                    <option>Ocupada/Irregular</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Tipo de Construção</label>
+                                <select name="tipo_construcao" class="form-control">
+                                    <option>Alvenaria</option>
+                                    <option>Madeira</option>
+                                    <option>Taipa/Barro</option>
+                                    <option>Outro</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="energia_eletrica" value="1">
+                            <label class="form-check-label">Possui energia elétrica</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="agua_encanada" value="1">
+                            <label class="form-check-label">Possui água encanada</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="saneamento" value="1">
+                            <label class="form-check-label">Possui fossa/sanitário</label>
+                        </div>
+
+                        <input type="text" name="destino_lixo" class="form-control mt-2" placeholder="Destino do lixo">
+                    </fieldset>
+
+                    <!-- Seção III: Renda e Atividades Econômicas -->
+                    <fieldset class="border p-3 mb-4">
+                        <legend class="w-auto text-danger"><i class="fas fa-coins"></i> Renda e Atividades Econômicas
+                        </legend>
+
+                        <div class="form-group">
+                            <label><strong>💼 Principais fontes de renda da família:</strong></label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="fontes_renda"
+                                    value="Agricultura familiar" id="renda1">
+                                <label class="form-check-label" for="renda1">Agricultura familiar</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="fontes_renda" value="Extrativismo"
+                                    id="renda2">
+                                <label class="form-check-label" for="renda2">Extrativismo (ex.: babaçu, açaí,
+                                    castanha)</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="fontes_renda" value="Pesca"
+                                    id="renda3">
+                                <label class="form-check-label" for="renda3">Pesca</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="fontes_renda"
+                                    value="Criação de animais" id="renda4">
+                                <label class="form-check-label" for="renda4">Criação de animais</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="fontes_renda" value="Artesanato"
+                                    id="renda5">
+                                <label class="form-check-label" for="renda5">Artesanato</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="fontes_renda"
+                                    value="Comércio informal" id="renda6">
+                                <label class="form-check-label" for="renda6">Comércio informal</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="fontes_renda"
+                                    value="Benefícios sociais" id="renda7">
+                                <label class="form-check-label" for="renda7">Benefícios sociais (ex.: Bolsa Família,
+                                    BPC)</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="fontes_renda"
+                                    value="Trabalho formal" id="renda8">
+                                <label class="form-check-label" for="renda8">Trabalho formal assalariado</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="fontes_renda"
+                                    value="Trabalho eventual" id="renda9">
+                                <label class="form-check-label" for="renda9">Trabalho eventual/diarista</label>
+                            </div>
+                            <div class="form-group mt-2">
+                                <input type="text" name="fontes_renda_outros" class="form-control"
+                                    placeholder="Outro: descreva...">
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <label><strong>💰 Renda familiar total aproximada (mensal):</strong></label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="renda_mensal"
+                                    value="Até 1/4 do salário mínimo" id="faixa1">
+                                <label class="form-check-label" for="faixa1">Até 1/4 do salário mínimo</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="renda_mensal"
+                                    value="De 1/4 a 1/2 salário mínimo" id="faixa2">
+                                <label class="form-check-label" for="faixa2">De 1/4 a 1/2 salário mínimo</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="renda_mensal"
+                                    value="De 1/2 a 1 salário mínimo" id="faixa3">
+                                <label class="form-check-label" for="faixa3">De 1/2 a 1 salário mínimo</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="renda_mensal"
+                                    value="De 1 a 2 salários mínimos" id="faixa4">
+                                <label class="form-check-label" for="faixa4">De 1 a 2 salários mínimos</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="renda_mensal"
+                                    value="Acima de 2 salários mínimos" id="faixa5">
+                                <label class="form-check-label" for="faixa5">Acima de 2 salários mínimos</label>
+                            </div>
+                        </div>
+                    </fieldset>
+
+
+                    <!-- Seção IV: Escolaridade e Capacitação -->
+                    <fieldset class="border p-3 mb-4">
+                        <legend class="w-auto text-primary"><i class="fas fa-user-graduate"></i> Escolaridade e
+                            Capacitação</legend>
+
+                        <div class="form-group">
+                            <label><strong>🎓 Grau de escolaridade do responsável:</strong></label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="escolaridade_responsavel"
+                                    value="Sem instrução" id="escolaridade1">
+                                <label class="form-check-label" for="escolaridade1">Sem instrução</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="escolaridade_responsavel"
+                                    value="Ensino fundamental incompleto" id="escolaridade2">
+                                <label class="form-check-label" for="escolaridade2">Ensino fundamental
+                                    incompleto</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="escolaridade_responsavel"
+                                    value="Ensino fundamental completo" id="escolaridade3">
+                                <label class="form-check-label" for="escolaridade3">Ensino fundamental completo</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="escolaridade_responsavel"
+                                    value="Ensino médio incompleto" id="escolaridade4">
+                                <label class="form-check-label" for="escolaridade4">Ensino médio incompleto</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="escolaridade_responsavel"
+                                    value="Ensino médio completo" id="escolaridade5">
+                                <label class="form-check-label" for="escolaridade5">Ensino médio completo</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="escolaridade_responsavel"
+                                    value="Ensino superior incompleto/completo" id="escolaridade6">
+                                <label class="form-check-label" for="escolaridade6">Ensino superior
+                                    incompleto/completo</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <label><strong>📚 Alguém na família já participou de cursos/capacitações?</strong></label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="familia_cursos" value="1"
+                                    id="cursosSim"
+                                    onclick="document.getElementById('campo_cursos').style.display = 'block'">
+                                <label class="form-check-label" for="cursosSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="familia_cursos" value="0"
+                                    id="cursosNao"
+                                    onclick="document.getElementById('campo_cursos').style.display = 'none'">
+                                <label class="form-check-label" for="cursosNao">Não</label>
+                            </div>
+
+                            <div id="campo_cursos" style="display: none;" class="mt-2">
+                                <input type="text" name="familia_quais_cursos" class="form-control"
+                                    placeholder="Quais cursos?">
+                            </div>
+                        </div>
+                    </fieldset>
+
+
+                    <!-- Seção V: Necessidades Básicas -->
+                    <fieldset class="border p-3 mb-4">
+                        <legend class="w-auto text-warning"><i class="fas fa-exclamation-triangle"></i> Necessidades
+                            Básicas</legend>
+
+                        <div class="form-group">
+                            <label><strong>🛑 Principais dificuldades enfrentadas atualmente:</strong></label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="dificuldades" value="Alimentação"
+                                    id="dif1">
+                                <label class="form-check-label" for="dif1">Alimentação</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="dificuldades" value="Saúde"
+                                    id="dif2">
+                                <label class="form-check-label" for="dif2">Saúde</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="dificuldades" value="Educação"
+                                    id="dif3">
+                                <label class="form-check-label" for="dif3">Educação</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="dificuldades" value="Transporte"
+                                    id="dif4">
+                                <label class="form-check-label" for="dif4">Transporte</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="dificuldades" value="Moradia"
+                                    id="dif5">
+                                <label class="form-check-label" for="dif5">Moradia</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="dificuldades"
+                                    value="Emprego/renda" id="dif6">
+                                <label class="form-check-label" for="dif6">Emprego/renda</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="difOutroCheck"
+                                    onclick="document.getElementById('campo_dificuldade_outro').style.display = this.checked ? 'block' : 'none'">
+                                <label class="form-check-label" for="difOutroCheck">Outro</label>
+                            </div>
+                            <input type="text" name="dificuldades_outros" id="campo_dificuldade_outro"
+                                class="form-control mt-2" placeholder="Descreva outra dificuldade"
+                                style="display: none;">
+                        </div>
+                    </fieldset>
+
+
+                    <!-- Seção VI: Potencialidades e Expectativas -->
+                    <fieldset class="border p-3 mb-4">
+                        <legend class="w-auto text-success"><i class="fas fa-seedling"></i> Potencialidades e
+                            Expectativas</legend>
+
+                        <div class="form-group">
+                            <label><strong>🌱 Quais atividades locais você acredita que poderiam gerar mais renda para a
+                                    família?</strong></label>
+                            <input type="text" name="atividades_geradoras" class="form-control"
+                                placeholder="Descreva atividades produtivas ou locais">
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <label><strong>💡 A família tem interesse em participar de projetos de geração de
+                                    renda?</strong></label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="interesse_projetos" value="1"
+                                    id="interesseSim"
+                                    onclick="document.getElementById('campo_areas_interesse').style.display = 'block'">
+                                <label class="form-check-label" for="interesseSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="interesse_projetos" value="0"
+                                    id="interesseNao"
+                                    onclick="document.getElementById('campo_areas_interesse').style.display = 'none'">
+                                <label class="form-check-label" for="interesseNao">Não</label>
+                            </div>
+                            <div id="campo_areas_interesse" class="mt-2" style="display: none;">
+                                <input type="text" name="areas_interesse" class="form-control"
+                                    placeholder="Se sim, em que áreas?">
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <label><strong>🎒 Há produtos ou saberes tradicionais que poderiam ser aproveitados para
+                                    aumentar a renda?</strong></label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="produtos_tradicionais" value="1"
+                                    id="saberesSim"
+                                    onclick="document.getElementById('campo_quais_produtos').style.display = 'block'">
+                                <label class="form-check-label" for="saberesSim">Sim</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="produtos_tradicionais" value="0"
+                                    id="saberesNao"
+                                    onclick="document.getElementById('campo_quais_produtos').style.display = 'none'">
+                                <label class="form-check-label" for="saberesNao">Não</label>
+                            </div>
+                            <div id="campo_quais_produtos" class="mt-2" style="display: none;">
+                                <input type="text" name="quais_produtos" class="form-control"
+                                    placeholder="Se sim, quais produtos ou saberes?">
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Seção VII: Contato para Acompanhamento -->
+                    <fieldset class="border p-3 mb-4">
+                        <legend class="w-auto text-info"><i class="fas fa-phone-alt"></i> Contato para Acompanhamento
+                        </legend>
+
+                        <div class="form-group">
+                            <label>📇 Nome para contato</label>
+                            <input type="text" name="nome_contato" class="form-control"
+                                placeholder="Nome da pessoa a ser contatada">
+                        </div>
+
+                        <div class="form-group">
+                            <label>📞 Telefone (se houver)</label>
+                            <input type="text" name="telefone" class="form-control" placeholder="(99) 99999-9999">
+                        </div>
+                    </fieldset>
+
+                </div>
+                <div class="card-footer d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Salvar Cadastro
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+
+
+<script>
+    window.addEventListener('load', function () {
+        if (document.getElementById('interesseSim')?.checked)
+            document.getElementById('campo_areas_interesse').style.display = 'block';
+        if (document.getElementById('saberesSim')?.checked)
+            document.getElementById('campo_quais_produtos').style.display = 'block';
+    });
+</script>
+
+
+
+<script>
+const form = document.querySelector("form");
+const STORAGE_KEY = "cadastros_perfil_offline";
+
+if (form) {
+  form.addEventListener('submit', function (e) {
+    if (!navigator.onLine) {
+      e.preventDefault();
+      salvarOffline();
+    } else {
+      localStorage.setItem('cadastro_perfil_sucesso', '1');
+    }
+  });
+}
+
+function salvarOffline() {
+  const formData = new FormData(form);
+  const dados = {};
+
+  formData.forEach((value, key) => {
+    if (key.endsWith("[]")) {
+      const cleanKey = key.replace("[]", "");
+      dados[cleanKey] = dados[cleanKey] || [];
+      dados[cleanKey].push(value);
+    } else {
+      dados[key] = value;
+    }
+  });
+
+  let registros = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  registros.push(dados);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
+
+  alert("✅ Cadastro salvo localmente! Será sincronizado quando a internet voltar.");
+}
+
+function sincronizarCadastros() {
+  const registros = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  if (registros.length === 0) return;
+
+  registros.forEach(dados => {
+    fetch("{% url 'sincronizar_perfil' %}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+      },
+      body: JSON.stringify(dados)
+    }).then(response => {
+      if (response.ok) {
+        console.log("✅ Cadastro sincronizado.");
+      }
+    });
+  });
+
+  localStorage.removeItem(STORAGE_KEY);
+}
+
+
+const statusDiv = document.getElementById("status-conexao");
+
+  function atualizarStatusConexao() {
+    statusDiv.classList.remove("alert-success", "alert-warning");
+
+    if (navigator.onLine) {
+      statusDiv.classList.add("alert", "alert-success");
+      statusDiv.innerHTML = '<i class="fas fa-check-circle me-2"></i> Online — envio direto para o servidor';
+    } else {
+      statusDiv.classList.add("alert", "alert-warning");
+      statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i> Offline — os dados serão salvos localmente';
+    }
+
+    statusDiv.style.display = "block";
+    statusDiv.style.position = "static";     // ✅ Não flutuante
+    statusDiv.style.marginBottom = "1rem";   // ✅ Espaço padrão
+    statusDiv.style.borderRadius = "0.375rem";
+    statusDiv.style.fontWeight = "500";
+    statusDiv.style.fontSize = "1rem";
+    statusDiv.style.padding = "0.75rem 1.25rem";
+  }
+
+window.addEventListener("load", () => {
+  atualizarStatusConexao();
+  sincronizarCadastros();
+});
+
+window.addEventListener("online", atualizarStatusConexao);
+window.addEventListener("offline", atualizarStatusConexao);
+</script>
+
+
+
+
+
+<style>
+  #status-conexao {
+    margin-top: -1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+  }
+</style>
+
+
+
+
+
+
+
+
+{% endblock %}

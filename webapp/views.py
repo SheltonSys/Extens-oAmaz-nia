@@ -41,12 +41,13 @@ class CustomLoginView(LoginView):
 
 from collections import Counter
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 from django.shortcuts import render
-from .models import Artesa, CanalComercializacao, Feirante, Agricultor, Evento
+from .models import Artesa, CanalComercializacao, Feirante, Agricultor, AgricultorNovo, Evento
 from .utils import gerar_grafico_base64
+import json
 
 
-# Função segura para geração de gráficos
 def gerar_grafico_seguro(titulo, lista):
     contador = Counter(lista)
     if contador:
@@ -60,82 +61,77 @@ def gerar_grafico_seguro(titulo, lista):
 def dashboard(request):
     user = request.user
 
-    # Consulta por permissão
     if user.is_superuser:
         artesas_qs = Artesa.objects.all()
         canais_qs = CanalComercializacao.objects.all()
         feirantes_qs = Feirante.objects.all()
         agricultores_qs = Agricultor.objects.all()
+        socio_qs = AgricultorNovo.objects.all()
         eventos_qs = Evento.objects.all()
     else:
         artesas_qs = Artesa.objects.filter(responsavel=user)
         canais_qs = CanalComercializacao.objects.filter(responsavel=user)
         feirantes_qs = Feirante.objects.filter(responsavel=user)
         agricultores_qs = Agricultor.objects.filter(responsavel=user)
+        socio_qs = AgricultorNovo.objects.filter(responsavel=user)
         eventos_qs = Evento.objects.filter(responsavel=user)
 
-    # Resumo
-    resumo_categorias = [
-        {'Categoria': 'Artesãs', 'Total': artesas_qs.count(), 'Novos': 3},
-        {'Categoria': 'Canais', 'Total': canais_qs.count(), 'Novos': 2},
-        {'Categoria': 'Feirantes', 'Total': feirantes_qs.count(), 'Novos': 1},
-        {'Categoria': 'Agricultores', 'Total': agricultores_qs.count(), 'Novos': 5},
-    ]
-
-    # Calendário
-    calendario_eventos = [{'Data': e.data, 'Evento': e.titulo} for e in eventos_qs.order_by('data')]
-
-    # Cards visuais
+    # === DADOS DE CARTÕES ===
     cards = [
         {'categoria': 'Artesãs', 'total': artesas_qs.count(), 'cor': 'info', 'icon': 'fas fa-female', 'url': 'cadastrar_artesa', 'label': 'Cadastrar'},
         {'categoria': 'Canais de Comercialização', 'total': canais_qs.count(), 'cor': 'success', 'icon': 'fas fa-store', 'url': 'cadastrar_canal', 'label': 'Cadastrar'},
         {'categoria': 'Feirantes', 'total': feirantes_qs.count(), 'cor': 'warning', 'icon': 'fas fa-people-carry', 'url': 'cadastrar_feirante', 'label': 'Cadastrar'},
-        {'categoria': 'Agricultores', 'total': agricultores_qs.count(), 'cor': 'danger', 'icon': 'fas fa-tractor', 'url': 'cadastrar_agricultor', 'label': 'Cadastrar'},
+        # {'categoria': 'Agricultores', 'total': agricultores_qs.count(), 'cor': 'danger', 'icon': 'fas fa-tractor', 'url': 'cadastrar_agricultor', 'label': 'Cadastrar'},
+        {'categoria': 'Perfil Socioeconômico', 'total': socio_qs.count(), 'cor': 'primary', 'icon': 'fas fa-clipboard', 'url': 'cadastrar_perfil', 'label': 'Cadastrar'},
     ]
 
-    # Listas para gráficos
-    renda_list = list(artesas_qs.values_list('renda_artesanato', flat=True))
+    # === RESUMO CATEGORIAS TABELA ===
+    resumo_categorias = [
+        {'Categoria': 'Artesãs', 'Total': artesas_qs.count(), 'Novos': artesas_qs.filter(data_cadastro__month=timezone.now().month).count()},
+        {'Categoria': 'Canais', 'Total': canais_qs.count(), 'Novos': canais_qs.filter(data_cadastro__month=timezone.now().month).count()},
+        {'Categoria': 'Feirantes', 'Total': feirantes_qs.count(), 'Novos': feirantes_qs.filter(data_cadastro__month=timezone.now().month).count()},
+        {'Categoria': 'Agricultores', 'Total': agricultores_qs.count(), 'Novos': agricultores_qs.filter(data_cadastro__month=timezone.now().month).count()},
+        {'Categoria': 'Perfil Socioeconômico', 'Total': socio_qs.count(), 'Novos': socio_qs.filter(data_cadastro__month=timezone.now().month).count()},
+    ]
+
+    # === GRÁFICOS PADRÕES ===
+    grafico_renda = gerar_grafico_seguro("Renda do Artesanato", list(artesas_qs.values_list('renda_artesanato', flat=True)))
 
     canais_list = []
-    import json  # no topo do arquivo
-
     for canal in canais_qs:
         try:
             identificados = canal.canais_identificados
             if isinstance(identificados, str):
                 identificados = json.loads(identificados)
-
             for d in identificados:
-                if isinstance(d, dict):
-                    canal_tipo = (d.get('canal') or '') + (d.get('tipo') or '')
-                    if canal_tipo.strip():
-                        canais_list.append(canal_tipo)
+                canal_tipo = (d.get('canal') or '') + (d.get('tipo') or '')
+                if canal_tipo.strip():
+                    canais_list.append(canal_tipo)
         except Exception:
             continue
-
-
-    periodicidade_list = list(feirantes_qs.values_list('periodicidade', flat=True))
-    credito_list = ['Sim' if a.acesso_credito else 'Não' for a in agricultores_qs]
-
-    # Gráficos
-    # Gráficos de pizza e barras
-    grafico_renda = gerar_grafico_seguro("Renda do Artesanato", renda_list)
     grafico_canais = gerar_grafico_seguro("Tipos de Canais", canais_list)
-    grafico_feiras = gerar_grafico_seguro("Periodicidade das Feiras", periodicidade_list)
-    grafico_credito = gerar_grafico_seguro("Acesso ao Crédito", credito_list)
 
-    categorias = [c['Categoria'] for c in resumo_categorias]
-    totais = [c['Total'] for c in resumo_categorias]
-    grafico_barras = gerar_grafico_base64("Comparativo Geral", categorias, totais)
+    grafico_feiras = gerar_grafico_seguro("Periodicidade das Feiras", list(feirantes_qs.values_list('periodicidade', flat=True)))
+    grafico_credito = gerar_grafico_seguro("Acesso ao Crédito", ['Sim' if a.acesso_credito else 'Não' for a in agricultores_qs])
 
-
+    # === GRÁFICO PERFIL SOCIOECONÔMICO ===
+    grafico_zona = gerar_grafico_seguro("Zona de Residência", list(socio_qs.values_list('zona', flat=True)))
 
     graficos = [
         {'titulo': 'Renda do Artesanato', 'cor': 'info', 'icon': 'fas fa-female', 'imagem': grafico_renda},
         {'titulo': 'Tipos de Canais', 'cor': 'success', 'icon': 'fas fa-store', 'imagem': grafico_canais},
         {'titulo': 'Periodicidade das Feiras', 'cor': 'warning', 'icon': 'fas fa-people-carry', 'imagem': grafico_feiras},
         {'titulo': 'Acesso ao Crédito', 'cor': 'danger', 'icon': 'fas fa-tractor', 'imagem': grafico_credito},
+        {'titulo': 'Zona de Residência', 'cor': 'primary', 'icon': 'fas fa-home', 'imagem': grafico_zona},
     ]
+
+    # === GRÁFICO DE BARRAS COMPARATIVO ===
+    categorias = [c['Categoria'] for c in resumo_categorias]
+    totais = [c['Total'] for c in resumo_categorias]
+    grafico_barras = gerar_grafico_base64("Comparativo Geral", categorias, totais)
+
+    # === CALENDÁRIO DE EVENTOS ===
+    calendario_eventos = [{'Data': e.data, 'Evento': e.titulo} for e in eventos_qs.order_by('data')]
 
     context = {
         'cards': cards,
@@ -146,6 +142,7 @@ def dashboard(request):
     }
 
     return render(request, 'dashboard.html', context)
+
 
 
 
@@ -609,15 +606,26 @@ def sincronizar_agricultor(request):
 ####**************************************************************************************************************************************
 
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.shortcuts import render
+from .models import Artesa
 
 @login_required
 def listar_artesas(request):
     if request.user.is_superuser:
-        artesas = Artesa.objects.all().order_by('-id')
+        artesas_qs = Artesa.objects.all().order_by('-id')
     else:
-        artesas = Artesa.objects.filter(responsavel=request.user).order_by('-id')
-    
-    return render(request, 'cadastros/listar_artesas.html', {'artesas': artesas})
+        artesas_qs = Artesa.objects.filter(responsavel=request.user).order_by('-id')
+
+    paginator = Paginator(artesas_qs, 10)  # 15 artesãs por página
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'cadastros/listar_artesas.html', {
+        'artesas': page_obj.object_list,
+        'page_obj': page_obj
+    })
+
 
 ####**************************************************************************************************************************************
 
@@ -887,7 +895,7 @@ def gerar_grafico_base64(titulo, labels, dados):
 
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from .models import Agricultor, Artesa, CanalComercializacao, Feirante, Evento
+from .models import Agricultor, Artesa, CanalComercializacao, Feirante, Evento, AgricultorNovo
 from datetime import datetime
 import json
 
@@ -900,6 +908,7 @@ def relatorio_dinamico(request):
 
     canais = CanalComercializacao.objects.all()
     agricultores = Agricultor.objects.all()
+    agricultores_novos = AgricultorNovo.objects.all()
     feirantes = Feirante.objects.all()
     artesas = Artesa.objects.all()
     eventos = Evento.objects.all()
@@ -908,6 +917,7 @@ def relatorio_dinamico(request):
     if responsavel_id:
         canais = canais.filter(responsavel=responsavel_id)
         agricultores = agricultores.filter(responsavel_id=responsavel_id)
+        agricultores_novos = agricultores_novos.filter(responsavel_id=responsavel_id)
         feirantes = feirantes.filter(responsavel_id=responsavel_id)
         artesas = artesas.filter(responsavel_id=responsavel_id)
         eventos = eventos.filter(responsavel_id=responsavel_id)
@@ -916,6 +926,7 @@ def relatorio_dinamico(request):
     if comunidade:
         canais = canais.filter(comunidade__icontains=comunidade)
         agricultores = agricultores.filter(cidade_origem__icontains=comunidade)
+        agricultores_novos = agricultores_novos.filter(comunidade__icontains=comunidade)
         feirantes = feirantes.filter(local__icontains=comunidade)
         eventos = eventos.filter(local__icontains=comunidade)
 
@@ -929,14 +940,17 @@ def relatorio_dinamico(request):
     if data_inicio_dt and data_fim_dt:
         canais = canais.filter(data__range=(data_inicio_dt, data_fim_dt))
         agricultores = agricultores.filter(data__range=(data_inicio_dt, data_fim_dt))
+        agricultores_novos = agricultores_novos.filter(data_cadastro__range=(data_inicio_dt, data_fim_dt))
         eventos = eventos.filter(data__range=(data_inicio_dt, data_fim_dt))
     elif data_inicio_dt:
         canais = canais.filter(data__gte=data_inicio_dt)
         agricultores = agricultores.filter(data__gte=data_inicio_dt)
+        agricultores_novos = agricultores_novos.filter(data_cadastro__gte=data_inicio_dt)
         eventos = eventos.filter(data__gte=data_inicio_dt)
     elif data_fim_dt:
         canais = canais.filter(data__lte=data_fim_dt)
         agricultores = agricultores.filter(data__lte=data_fim_dt)
+        agricultores_novos = agricultores_novos.filter(data_cadastro__lte=data_fim_dt)
         eventos = eventos.filter(data__lte=data_fim_dt)
 
     # Filtro por tipo/produto/evento
@@ -952,6 +966,7 @@ def relatorio_dinamico(request):
         canais = canais_filtrados
 
         agricultores = agricultores.filter(produto_principal__icontains=tipo)
+        agricultores_novos = agricultores_novos.filter(atividades_geradoras__icontains=tipo)
         feirantes = feirantes.filter(produtos__icontains=tipo)
         artesas = artesas.filter(tipos_producao__icontains=tipo)
         eventos = eventos.filter(titulo__icontains=tipo)
@@ -960,6 +975,7 @@ def relatorio_dinamico(request):
     comunidades = sorted(set(
         list(CanalComercializacao.objects.values_list('comunidade', flat=True)) +
         list(Agricultor.objects.values_list('cidade_origem', flat=True)) +
+        list(AgricultorNovo.objects.values_list('comunidade', flat=True)) +
         list(Feirante.objects.values_list('local', flat=True)) +
         list(Evento.objects.values_list('local', flat=True))
     ))
@@ -968,6 +984,7 @@ def relatorio_dinamico(request):
     tipos_raw = set()
     tipos_raw.update(Agricultor.objects.values_list('produto_principal', flat=True))
     tipos_raw.update(Evento.objects.values_list('titulo', flat=True))
+    tipos_raw.update(AgricultorNovo.objects.values_list('atividades_geradoras', flat=True))
 
     for a in Artesa.objects.all():
         if a.tipos_producao:
@@ -986,7 +1003,6 @@ def relatorio_dinamico(request):
             continue
 
     tipos = sorted(set(filter(None, tipos_raw)))
-
     usuarios = User.objects.filter(is_active=True).order_by('first_name')
 
     # Converte tipos_producao (string) em lista para cada artesã
@@ -996,10 +1012,10 @@ def relatorio_dinamico(request):
         else:
             a.producoes_lista = []
 
-
     context = {
         'canais': canais,
         'agricultores': agricultores,
+        'agricultores_novos': agricultores_novos,
         'feirantes': feirantes,
         'artesas': artesas,
         'eventos': eventos,
@@ -1010,3 +1026,102 @@ def relatorio_dinamico(request):
 
     return render(request, 'relatorios/relatorio_dinamico.html', context)
 
+
+
+
+
+# views.py
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import AgricultorNovo  # novo model com base no novo questionário
+
+@login_required
+def cadastrar_perfil_socioeconomico(request):
+    if request.method == 'POST':
+        agricultor = AgricultorNovo(
+            nome_responsavel=request.POST.get('nome_responsavel'),
+            comunidade=request.POST.get('comunidade'),
+            qtd_moradores=request.POST.get('qtd_moradores'),
+            tempo_comunidade=request.POST.get('tempo_comunidade'),
+            composicao_criancas=request.POST.get('composicao_criancas'),
+            composicao_adolescentes=request.POST.get('composicao_adolescentes'),
+            composicao_adultos=request.POST.get('composicao_adultos'),
+            composicao_idosos=request.POST.get('composicao_idosos'),
+            tipo_moradia=request.POST.get('tipo_moradia'),
+            tipo_construcao=request.POST.get('tipo_construcao'),
+            energia_eletrica=bool(request.POST.get('energia_eletrica')),
+            agua_encanada=bool(request.POST.get('agua_encanada')),
+            saneamento=bool(request.POST.get('saneamento')),
+            destino_lixo=request.POST.get('destino_lixo'),
+            zona=request.POST.get('zona'),
+            fontes_renda=", ".join(request.POST.getlist('fontes_renda')),
+            renda_mensal=request.POST.get('renda_mensal'),
+            escolaridade_responsavel=request.POST.get('escolaridade_responsavel'),
+            familia_cursos=bool(request.POST.get('familia_cursos')),
+            familia_quais_cursos=request.POST.get('familia_quais_cursos'),
+            dificuldades=", ".join(request.POST.getlist('dificuldades')),
+            atividades_geradoras=request.POST.get('atividades_geradoras'),
+            interesse_projetos=bool(request.POST.get('interesse_projetos')),
+            areas_interesse=request.POST.get('areas_interesse'),
+            produtos_tradicionais=bool(request.POST.get('produtos_tradicionais')),
+            quais_produtos=request.POST.get('quais_produtos'),
+            nome_contato=request.POST.get('nome_contato'),
+            telefone=request.POST.get('telefone'),
+            responsavel=request.user
+        )
+        agricultor.save()
+        return redirect('dashboard')  # ajuste conforme sua URL nomeada
+
+    return render(request, 'cadastros/cadastrar_perfil.html')
+
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
+
+@csrf_exempt
+def sincronizar_perfil(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        agricultor = AgricultorNovo(
+            nome_responsavel=data.get('nome_responsavel'),
+            comunidade=data.get('comunidade'),
+            qtd_moradores=data.get('qtd_moradores'),
+            tempo_comunidade=data.get('tempo_comunidade'),
+            composicao_criancas=data.get('composicao_criancas'),
+            composicao_adolescentes=data.get('composicao_adolescentes'),
+            composicao_adultos=data.get('composicao_adultos'),
+            composicao_idosos=data.get('composicao_idosos'),
+            tipo_moradia=data.get('tipo_moradia'),
+            tipo_construcao=data.get('tipo_construcao'),
+            energia_eletrica=data.get('energia_eletrica') == '1',
+            agua_encanada=data.get('agua_encanada') == '1',
+            saneamento=data.get('saneamento') == '1',
+            destino_lixo=data.get('destino_lixo'),
+            zona=data.get('zona'),
+            fontes_renda=", ".join(data.get('fontes_renda', [])),
+            renda_mensal=data.get('renda_mensal'),
+            escolaridade_responsavel=data.get('escolaridade_responsavel'),
+            familia_cursos=data.get('familia_cursos') == '1',
+            familia_quais_cursos=data.get('familia_quais_cursos'),
+            dificuldades=", ".join(data.get('dificuldades', [])),
+            atividades_geradoras=data.get('atividades_geradoras'),
+            interesse_projetos=data.get('interesse_projetos') == '1',
+            areas_interesse=data.get('areas_interesse'),
+            produtos_tradicionais=data.get('produtos_tradicionais') == '1',
+            quais_produtos=data.get('quais_produtos'),
+            nome_contato=data.get('nome_contato'),
+            telefone=data.get('telefone'),
+            responsavel=request.user if request.user.is_authenticated else None
+        )
+        agricultor.save()
+        return JsonResponse({"status": "ok"})
+
+
+
+@login_required
+def listar_perfis_socioeconomicos(request):
+    agricultores = AgricultorNovo.objects.all().order_by('-data_cadastro')
+    return render(request, 'cadastros/listar_agricultores_novo.html', {'agricultores': agricultores})

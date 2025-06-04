@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Listagem Socioeconômica | EXTENSÃO{% endblock %}
+
+{% block content %}
+
+<style>
+  @media (min-width: 992px) {
+    .col-lg-2-4 {
+      flex: 0 0 auto;
+      width: 20%;
+    }
+  }
+
+  .card-agricultor {
+    border: none;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .card-agricultor:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .agricultor-img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+  }
+
+  .truncate-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+  }
+</style>
+
+<section class="content-header">
+  <div class="container-fluid">
+    <h1><i class="fas fa-clipboard text-primary"></i> Perfil Socioeconômico</h1>
+    <p class="text-muted">Famílias entrevistadas com dados socioeconômicos no projeto.</p>
+  </div>
+</section>
+
+<section class="content">
+  <div class="container-fluid">
+
+    <!-- Cards -->
+    <div class="row">
+      {% for ag in agricultores %}
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2-4 mb-4">
+        <div class="card card-agricultor shadow-sm h-100 border-primary">
+          <div class="bg-primary text-white text-center p-2 rounded-top">
+            <h6 class="fw-bold mb-0 truncate-text" title="{{ ag.comunidade }}">
+              {{ ag.comunidade }}
+            </h6>
+            <small>{{ ag.nome_responsavel }}</small>
+          </div>
+          <div class="text-center mt-2">
+            <img src="{% static 'assets/dist/img/logo_extenção.png' %}" class="rounded-circle border agricultor-img shadow-sm" alt="Foto">
+          </div>
+          <div class="card-body text-center py-2">
+            <small class="d-block"><strong>Moradores:</strong> {{ ag.qtd_moradores }}</small>
+            <small class="d-block"><strong>Zona:</strong> {{ ag.zona }}</small>
+            <small class="d-block truncate-text" title="{{ ag.tempo_comunidade }}"><strong>Tempo:</strong> {{ ag.tempo_comunidade }}</small>
+          </div>
+          <div class="card-footer text-center py-1 bg-light">
+            <small>
+              Energia:
+              {% if ag.energia_eletrica %}
+                <span class="badge bg-success">Sim</span>
+              {% else %}
+                <span class="badge bg-secondary">Não</span>
+              {% endif %}
+            </small>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info text-center">
+          Nenhum perfil socioeconômico cadastrado ainda.
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Tabela -->
+    <div class="card card-outline card-primary mt-4">
+      <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-table"></i> Lista de Perfis Socioeconômicos</h3>
+      </div>
+      <div class="card-body table-responsive p-0">
+        <table class="table table-hover table-striped">
+          <thead class="thead-light">
+            <tr>
+              <th>ID</th>
+              <th>Comunidade</th>
+              <th>Responsável</th>
+              <th>Moradores</th>
+              <th>Zona</th>
+              <th>Energia</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ag in agricultores %}
+            <tr>
+              <td>{{ ag.id }}</td>
+              <td>{{ ag.comunidade }}</td>
+              <td>{{ ag.nome_responsavel }}</td>
+              <td>{{ ag.qtd_moradores }}</td>
+              <td>{{ ag.zona }}</td>
+              <td>
+                {% if ag.energia_eletrica %}
+                  <span class="badge bg-success">Sim</span>
+                {% else %}
+                  <span class="badge bg-secondary">Não</span>
+                {% endif %}
+              </td>
+              <td>{{ ag.data_cadastro|date:"d/m/Y H:i" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

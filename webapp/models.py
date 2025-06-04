@@ -167,6 +167,49 @@ class Agricultor(models.Model):
     data_cadastro = models.DateTimeField(auto_now_add=True)
 
     responsavel = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+
+
+class AgricultorNovo(models.Model):
+    nome_responsavel = models.CharField(max_length=100)
+    comunidade = models.CharField(max_length=100)
+    qtd_moradores = models.IntegerField()
+    tempo_comunidade = models.CharField(max_length=50)
+    composicao_criancas = models.IntegerField()
+    composicao_adolescentes = models.IntegerField()
+    composicao_adultos = models.IntegerField()
+    composicao_idosos = models.IntegerField()
+
+    tipo_moradia = models.CharField(max_length=50)
+    tipo_construcao = models.CharField(max_length=50)
+    energia_eletrica = models.BooleanField()
+    agua_encanada = models.BooleanField()
+    saneamento = models.BooleanField()
+    destino_lixo = models.CharField(max_length=100)
+    zona = models.CharField(max_length=20)
+
+    fontes_renda = models.TextField()
+    renda_mensal = models.CharField(max_length=50)
+
+    escolaridade_responsavel = models.CharField(max_length=100)
+    familia_cursos = models.BooleanField()
+    familia_quais_cursos = models.TextField(blank=True)
+
+    dificuldades = models.TextField()
+    atividades_geradoras = models.TextField()
+    interesse_projetos = models.BooleanField()
+    areas_interesse = models.TextField(blank=True)
+    produtos_tradicionais = models.BooleanField()
+    quais_produtos = models.TextField(blank=True)
+
+    nome_contato = models.CharField(max_length=100)
+    telefone = models.CharField(max_length=30, blank=True)
+
+    data_cadastro = models.DateTimeField(auto_now_add=True)
+    responsavel = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+
+
 ######################***********************************************************************************************************
 
 from django.contrib.auth.models import User

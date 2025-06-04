@@ -32,35 +32,49 @@
       {% endfor %}
     </div>
 
-    <!-- Linha de Gráficos -->
-    <div class="row">
-      {% for graf in graficos %}
-      <div class="col-md-6">
-        <div class="card card-outline card-{{ graf.cor }}">
-          <div class="card-header">
-            <h3 class="card-title"><i class="{{ graf.icon }}"></i> {{ graf.titulo }}</h3>
-          </div>
-          <div class="card-body text-center">
-            <img src="data:image/png;base64,{{ graf.imagem }}" class="img-fluid" alt="Gráfico {{ graf.titulo }}">
-          </div>
-        </div>
+    <!-- Linha de Gráficos (Primeiro Gráfico de Pizza + Gráfico de Barras lado a lado) -->
+<div class="row">
+  {% if graficos %}
+  <div class="col-md-6">
+    <div class="card card-outline card-{{ graficos.0.cor }}">
+      <div class="card-header">
+        <h3 class="card-title"><i class="{{ graficos.0.icon }}"></i> {{ graficos.0.titulo }}</h3>
       </div>
-      {% endfor %}
+      <div class="card-body text-center">
+        <img src="data:image/png;base64,{{ graficos.0.imagem }}" class="img-fluid" alt="Gráfico {{ graficos.0.titulo }}">
+      </div>
     </div>
+  </div>
+  {% endif %}
+  
+  <div class="col-md-6">
+    <div class="card card-outline card-primary">
+      <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-chart-bar"></i> Comparativo de Registros por Categoria</h3>
+      </div>
+      <div class="card-body text-center">
+        <img src="data:image/png;base64,{{ grafico_barras }}" class="img-fluid" alt="Gráfico de Barras">
+      </div>
+    </div>
+  </div>
+</div>
 
-    <!-- Gráfico Comparativo -->
-    <div class="row">
-      <div class="col-12">
-        <div class="card card-outline card-primary">
-          <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-chart-bar"></i> Comparativo de Registros por Categoria</h3>
-          </div>
-          <div class="card-body text-center">
-            <img src="data:image/png;base64,{{ grafico_barras }}" class="img-fluid" alt="Gráfico de Barras">
-          </div>
-        </div>
+<!-- Demais Gráficos -->
+<div class="row mt-4">
+  {% for graf in graficos|slice:"1:" %}
+  <div class="col-md-6">
+    <div class="card card-outline card-{{ graf.cor }}">
+      <div class="card-header">
+        <h3 class="card-title"><i class="{{ graf.icon }}"></i> {{ graf.titulo }}</h3>
+      </div>
+      <div class="card-body text-center">
+        <img src="data:image/png;base64,{{ graf.imagem }}" class="img-fluid" alt="Gráfico {{ graf.titulo }}">
       </div>
     </div>
+  </div>
+  {% endfor %}
+</div>
+
 
     <!-- Tabela e calendário -->
     <div class="row">

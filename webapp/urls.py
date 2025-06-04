@@ -59,6 +59,12 @@ urlpatterns = [
     path('cadastro/artesa/', views.cadastrar_artesa, name='cadastrar_artesa'),
 
 
+    path('perfil/listar/', views.listar_perfis_socioeconomicos, name='listar_agricultores_novo'),
+    path('perfil/cadastrar/', views.cadastrar_perfil_socioeconomico, name='cadastrar_perfil'),
+    path('sincronizar/perfil/', views.sincronizar_perfil, name='sincronizar_perfil'),
+
+
+
 
 
 ]

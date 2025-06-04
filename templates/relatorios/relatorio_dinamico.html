@@ -146,6 +146,70 @@
       </div>
     </div>
   </div>
+
+
+
+  <!-- Perfil Socioeconômico -->
+<div class="card card-outline card-info shadow-sm mb-4">
+  <div class="card-header">
+    <h3 class="card-title"><i class="fas fa-clipboard"></i> Perfil Socioeconômico</h3>
+  </div>
+  <div class="card-body table-responsive p-0">
+    <table class="table table-sm table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Comunidade</th>
+          <th>Responsável</th>
+          <th>Moradores</th>
+          <th>Zona</th>
+          <th>Energia</th>
+          <th>Água</th>
+          <th>Saneamento</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ag in agricultores_novos %}
+        <tr>
+          <td>{{ ag.data_cadastro|date:"d/m/Y" }}</td>
+          <td>{{ ag.comunidade }}</td>
+          <td>{{ ag.nome_responsavel }}</td>
+          <td>{{ ag.qtd_moradores }}</td>
+          <td>{{ ag.zona }}</td>
+          <td>
+            {% if ag.energia_eletrica %}
+              <span class="badge badge-success">Sim</span>
+            {% else %}
+              <span class="badge badge-secondary">Não</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if ag.agua_encanada %}
+              <span class="badge badge-success">Sim</span>
+            {% else %}
+              <span class="badge badge-secondary">Não</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if ag.saneamento %}
+              <span class="badge badge-success">Sim</span>
+            {% else %}
+              <span class="badge badge-secondary">Não</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8" class="text-muted text-center">Nenhum perfil socioeconômico encontrado.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
 </section>
 
 
